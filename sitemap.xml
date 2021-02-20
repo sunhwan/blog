@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
-<loc>https://sunhwan.github.io/blog/jupyter/2020/02/20/test.html</loc>
+<loc>https://sunhwan.github.io/blog/2020/02/20/test.html</loc>
 <lastmod>2020-02-20T00:00:00-06:00</lastmod>
 </url>
 <url>
-<loc>https://sunhwan.github.io/blog/jupyter/2021/01/29/RDKit-Embed-Congeneric-Series.html</loc>
+<loc>https://sunhwan.github.io/blog/2021/01/29/RDKit-Embed-Congeneric-Series.html</loc>
 <lastmod>2021-01-29T00:00:00-06:00</lastmod>
 </url>
 <url>
-<loc>https://sunhwan.github.io/blog/jupyter/2021/02/04/RDKit-Protein-Ligand-SASA.html</loc>
+<loc>https://sunhwan.github.io/blog/2021/02/04/RDKit-Protein-Ligand-SASA.html</loc>
 <lastmod>2021-02-04T00:00:00-06:00</lastmod>
+</url>
+<url>
+<loc>https://sunhwan.github.io/blog/2021/02/20/Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph.html</loc>
+<lastmod>2021-02-20T00:00:00-06:00</lastmod>
 </url>
 <url>
 <loc>https://sunhwan.github.io/blog/about/</loc>
