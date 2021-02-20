@@ -121,3 +121,6 @@ kramdown:
 feed:
   posts_limit: 5 #default posts_limit: 10
   excerpt_only: true
+
+permalink: /:year/:month/:day/:title:output_ext
+
