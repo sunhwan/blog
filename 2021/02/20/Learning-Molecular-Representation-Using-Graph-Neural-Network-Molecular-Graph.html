@@ -1964,8 +1964,8 @@ $$h = \sum_{v\in G} h_v$$
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now we sum the hidden states to form the final molecular vector. This vector is called "learned molecular vector" and used in property prediction using feed-forward network. At this point, we have not trained the leanred matrices and the hidden states are close to random numbers. In the next post, I'll try t</p>
-<p>This learned molecular vector is equivalent to molecular fingerprint, however, unlike the fingerprint, this representation can change for different dataset to better represents the nature of the data, which is the basis of how graph neural network can outperform the traditional machine learning approaches using fingerprint only.</p>
+<p>Now we sum the hidden states to form the final molecular vector. This vector is called "learned molecular vector" and used in property prediction using feed-forward network. At this point, we have not trained the leanred matrices and the hidden states are close to random numbers. In the next post, I'll try to explore how these hidden states and the leanred molecular vector evolves as we train the neural network.</p>
+<p>This learned molecular vector is equivalent to molecular fingerprint, however, unlike molecular fingerprint, this representation can change for different dataset to better represents the nature of the data, which is the basis of how graph neural network can outperform the traditional machine learning approaches using fingerprint only.</p>
 
 </div>
 </div>
@@ -2056,6 +2056,7 @@ $$h = \sum_{v\in G} h_v$$
 <li>The rate of information transfer can be faster if we adopt a coarse network where the node are connected to not only neighbors but neighbor-of-neighbors or a network of functional groups.</li>
 <li>Some kind of attention algorithm might also be useful to improve interpretability of the network.</li>
 </ul>
+<p>In the next post, I'll train a GCNN and examine how the learned mlecular vector evolves after a training.</p>
 
 </div>
 </div>

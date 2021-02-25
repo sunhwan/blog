@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Piperazine Ring Conformation using RDKit | Sunhwan Jo</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Piperazine Ring Conformation using RDKit" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Examine ring conformation of piperazine built by RDKit ETKDG algorithm" />
+<meta property="og:description" content="Examine ring conformation of piperazine built by RDKit ETKDG algorithm" />
+<link rel="canonical" href="https://sunhwan.github.io/blog/2021/02/24/RDKit-ETKDG-Piperazine.html" />
+<meta property="og:url" content="https://sunhwan.github.io/blog/2021/02/24/RDKit-ETKDG-Piperazine.html" />
+<meta property="og:site_name" content="Sunhwan Jo" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-02-24T00:00:00-06:00" />
+<script type="application/ld+json">
+{"mainEntityOfPage":{"@type":"WebPage","@id":"https://sunhwan.github.io/blog/2021/02/24/RDKit-ETKDG-Piperazine.html"},"url":"https://sunhwan.github.io/blog/2021/02/24/RDKit-ETKDG-Piperazine.html","@type":"BlogPosting","headline":"Piperazine Ring Conformation using RDKit","dateModified":"2021-02-24T00:00:00-06:00","datePublished":"2021-02-24T00:00:00-06:00","description":"Examine ring conformation of piperazine built by RDKit ETKDG algorithm","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://sunhwan.github.io/blog/feed.xml" title="Sunhwan Jo" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Sunhwan Jo</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Piperazine Ring Conformation using RDKit</h1><p class="page-description">Examine ring conformation of piperazine built by RDKit ETKDG algorithm</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-02-24T00:00:00-06:00" itemprop="datePublished">
+        Feb 24, 2021
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      5 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#rdkit">rdkit</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-wrap flex-justify-end">
+          <div class="px-2">
+
+    <a href="https://github.com/sunhwan/blog/tree/master/_notebooks/2021-02-24-RDKit-ETKDG-Piperazine.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/blog/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/sunhwan/blog/master?filepath=_notebooks%2F2021-02-24-RDKit-ETKDG-Piperazine.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/sunhwan/blog/blob/master/_notebooks/2021-02-24-RDKit-ETKDG-Piperazine.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h1"><a href="#Motivation">Motivation </a></li>
+<li class="toc-entry toc-h1"><a href="#Ring-conformation-using-ETKDG-v1">Ring conformation using ETKDG v1 </a></li>
+<li class="toc-entry toc-h1"><a href="#Optimize-Geometry-using-MMFF">Optimize Geometry using MMFF </a></li>
+<li class="toc-entry toc-h1"><a href="#ETKDG-version-3">ETKDG version 3 </a></li>
+<li class="toc-entry toc-h1"><a href="#Conclusion">Conclusion </a></li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2021-02-24-RDKit-ETKDG-Piperazine.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Motivation">
+<a class="anchor" href="#Motivation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Motivation<a class="anchor-link" href="#Motivation"> </a>
+</h1>
+<p>I noticed whenever I built 3D conformers of molecules containing piperazine (or cyclohexane) using RDKit, I tend to get a distorted ring conformation. RDKit's ETKDG (Experimental Torsion angle Knowledge-based Distance Geometry) algorithm works really well in general, but, in this case, it was not doing a good job at coming up with a reasonable initial conformation. I wanted to first quantify how much chair vs boat vs twisted conformer I get, so either I could use it to filter out non-desirable conformers or improve the RDKit's conformer generation routine.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="o">%</span><span class="k">matplotlib</span> inline
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="kn">import</span> <span class="n">PandasTools</span>
+
+<span class="kn">from</span> <span class="nn">rdkit</span> <span class="kn">import</span> <span class="n">Chem</span>
+<span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="kn">import</span> <span class="n">AllChem</span>
+<span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="kn">import</span> <span class="n">DataStructs</span>
+<span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="kn">import</span> <span class="n">rdMolDescriptors</span>
+<span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="kn">import</span> <span class="n">rdRGroupDecomposition</span>
+
+<span class="kn">from</span> <span class="nn">rdkit.Chem.Draw</span> <span class="kn">import</span> <span class="n">IPythonConsole</span> <span class="c1">#Needed to show molecules</span>
+<span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="kn">import</span> <span class="n">Draw</span>
+<span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="kn">import</span> <span class="n">rdDepictor</span>
+<span class="kn">from</span> <span class="nn">rdkit.Chem.Draw</span> <span class="kn">import</span> <span class="n">rdMolDraw2D</span>
+<span class="kn">from</span> <span class="nn">rdkit.Chem.Draw.MolDrawing</span> <span class="kn">import</span> <span class="n">MolDrawing</span><span class="p">,</span> <span class="n">DrawingOptions</span> <span class="c1">#Only needed if modifying defaults</span>
+
+<span class="n">DrawingOptions</span><span class="o">.</span><span class="n">bondLineWidth</span><span class="o">=</span><span class="mf">1.8</span>
+<span class="n">IPythonConsole</span><span class="o">.</span><span class="n">ipython_useSVG</span><span class="o">=</span><span class="kc">True</span>
+<span class="kn">from</span> <span class="nn">rdkit</span> <span class="kn">import</span> <span class="n">RDLogger</span>
+<span class="n">RDLogger</span><span class="o">.</span><span class="n">DisableLog</span><span class="p">(</span><span class="s1">'rdApp.warning'</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">rdkit</span>
+<span class="kn">import</span> <span class="nn">py3Dmol</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">rdkit</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>2020.03.2
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Ring-conformation-using-ETKDG-v1">
+<a class="anchor" href="#Ring-conformation-using-ETKDG-v1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Ring conformation using ETKDG v1<a class="anchor-link" href="#Ring-conformation-using-ETKDG-v1"> </a>
+</h1>
+<p>Let's make a piperazine molecule for testing. I put atom map in my SMILES, so I can refer them easily later.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">smiles</span> <span class="o">=</span> <span class="s1">'[NH:4]1[CH2:3][CH2:2][NH:1][CH2:6][CH2:5]1'</span>
+<span class="n">mol</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="n">smiles</span><span class="p">)</span>
+<span class="n">mol</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_svg output_subarea output_execute_result">
+<?xml version='1.0' encoding='iso-8859-1'?>
+<svg version="1.1" baseprofile="full" xmlns="http://www.w3.org/2000/svg" xmlns:rdkit="http://www.rdkit.org/xml" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" width="450px" height="150px" viewbox="0 0 450 150">
+<!-- END OF HEADER -->
+<rect style="opacity:1.0;fill:#FFFFFF;stroke:none" width="450" height="150" x="0" y="0"> </rect>
+<path class="bond-0" d="M 290.179,86.0039 L 280.026,103.589" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-0" d="M 280.026,103.589 L 269.873,121.174" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-5" d="M 290.179,63.9961 L 280.026,46.411" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-5" d="M 280.026,46.411 L 269.873,28.826" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-1" d="M 242.966,132.178 L 218.052,132.178" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-2" d="M 191.144,121.174 L 180.991,103.589" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-2" d="M 180.991,103.589 L 170.838,86.0039" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-3" d="M 170.838,63.9961 L 180.991,46.411" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-3" d="M 180.991,46.411 L 191.144,28.826" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-4" d="M 218.052,17.8221 L 242.966,17.8221" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<text dominant-baseline="central" text-anchor="start" x="278.178" y="78.3012" style="font-size:22px;font-style:normal;font-weight:normal;fill-opacity:1;stroke:none;font-family:sans-serif;fill:#0000FF"><tspan>N:4H</tspan></text>
+<text dominant-baseline="central" text-anchor="start" x="245.166" y="135.479" style="font-size:22px;font-style:normal;font-weight:normal;fill-opacity:1;stroke:none;font-family:sans-serif;fill:#000000"><tspan>C:3</tspan></text>
+<text dominant-baseline="central" text-anchor="end" x="215.851" y="135.479" style="font-size:22px;font-style:normal;font-weight:normal;fill-opacity:1;stroke:none;font-family:sans-serif;fill:#000000"><tspan>C:2</tspan></text>
+<text dominant-baseline="central" text-anchor="end" x="182.839" y="78.3012" style="font-size:22px;font-style:normal;font-weight:normal;fill-opacity:1;stroke:none;font-family:sans-serif;fill:#0000FF"><tspan>HN:1</tspan></text>
+<text dominant-baseline="central" text-anchor="end" x="215.851" y="21.1232" style="font-size:22px;font-style:normal;font-weight:normal;fill-opacity:1;stroke:none;font-family:sans-serif;fill:#000000"><tspan>C:6</tspan></text>
+<text dominant-baseline="central" text-anchor="start" x="245.166" y="21.1232" style="font-size:22px;font-style:normal;font-weight:normal;fill-opacity:1;stroke:none;font-family:sans-serif;fill:#000000"><tspan>C:5</tspan></text>
+</svg>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let's use default parameter for embedding, which uses ETKDG version 1, and generate 500 conformers.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">params</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">rdDistGeom</span><span class="o">.</span><span class="n">EmbedParameters</span><span class="p">()</span>
+<span class="n">params</span><span class="o">.</span><span class="n">randomSeed</span> <span class="o">=</span> <span class="mh">0xf00d</span>
+
+<span class="c1">#params = Chem.rdDistGeom.srETKDGv3() </span>
+<span class="n">cids</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">EmbedMultipleConfs</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">numConfs</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">atoms</span> <span class="o">=</span> <span class="p">{</span><span class="n">a</span><span class="o">.</span><span class="n">GetAtomMapNum</span><span class="p">():</span> <span class="n">a</span><span class="o">.</span><span class="n">GetIdx</span><span class="p">()</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">mol</span><span class="o">.</span><span class="n">GetAtoms</span><span class="p">()</span> <span class="k">if</span> <span class="n">a</span><span class="o">.</span><span class="n">GetAtomMapNum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">}</span>
+
+<span class="c1"># torsion angle atom indices</span>
+<span class="n">torsions</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="n">atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">atoms</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">atoms</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">atoms</span><span class="p">[</span><span class="mi">4</span><span class="p">]),</span>
+    <span class="p">(</span><span class="n">atoms</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">atoms</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">atoms</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">atoms</span><span class="p">[</span><span class="mi">5</span><span class="p">]),</span>
+    <span class="p">(</span><span class="n">atoms</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">atoms</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">atoms</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">atoms</span><span class="p">[</span><span class="mi">6</span><span class="p">]),</span>
+    <span class="p">(</span><span class="n">atoms</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">atoms</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">atoms</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="n">atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+    <span class="p">(</span><span class="n">atoms</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span> <span class="n">atoms</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="n">atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">atoms</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>
+    <span class="p">(</span><span class="n">atoms</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="n">atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">atoms</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">atoms</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span>
+<span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>I'm going to define a simple check in chain vs boat vs twisted conformers of cyclohexane ring. If all six torsions are near +/- 60˚ (margin 30˚), it is considered a chair conformation. If two opposite torsions are close to 0˚ (margin 30˚) and the other remaining torsion angles are around +/- 60˚, then it is considered a boat conformation. The rest are considered as a twisted conformation.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">ring_conformers</span><span class="p">(</span><span class="n">mol</span><span class="p">):</span>
+    <span class="n">angles</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">confs</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">conf</span> <span class="ow">in</span> <span class="n">mol</span><span class="o">.</span><span class="n">GetConformers</span><span class="p">():</span>
+        <span class="n">angs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">([</span><span class="n">Chem</span><span class="o">.</span><span class="n">rdMolTransforms</span><span class="o">.</span><span class="n">GetDihedralDeg</span><span class="p">(</span><span class="n">conf</span><span class="p">,</span> <span class="o">*</span><span class="n">t</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">torsions</span><span class="p">])</span>
+        <span class="n">angles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">angs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">((</span><span class="n">angs</span> <span class="o">-</span> <span class="mi">60</span><span class="p">)</span><span class="o">/</span><span class="mi">60</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">):</span> 
+            <span class="n">confs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'chair'</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">angs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">30</span> <span class="ow">and</span> <span class="n">angs</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">30</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">((</span><span class="n">angs</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]]</span> <span class="o">-</span> <span class="mi">60</span><span class="p">)</span><span class="o">/</span><span class="mi">60</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">):</span>
+            <span class="n">confs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'boat'</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">angs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">30</span> <span class="ow">and</span> <span class="n">angs</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">30</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">((</span><span class="n">angs</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]]</span> <span class="o">-</span> <span class="mi">60</span><span class="p">)</span><span class="o">/</span><span class="mi">60</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">):</span>
+            <span class="n">confs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'boat'</span><span class="p">)</span>        
+        <span class="k">elif</span> <span class="n">angs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">30</span> <span class="ow">and</span> <span class="n">angs</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">30</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">((</span><span class="n">angs</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]]</span> <span class="o">-</span> <span class="mi">60</span><span class="p">)</span><span class="o">/</span><span class="mi">60</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">):</span>
+            <span class="n">confs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'boat'</span><span class="p">)</span>        
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">confs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">'twisted'</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">confs</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
+<span class="n">confs</span> <span class="o">=</span> <span class="n">ring_conformers</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+<span class="n">Counter</span><span class="p">(</span><span class="n">confs</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Counter({'chair': 144, 'twisted': 327, 'boat': 29})</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>So, I got 144 chair (28%), 29 boat (6%), and 327 twisted (65%) conformers. Let's take a look at some conformers and make sure we got the right conformers. First chair conformation.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">shuffle</span>
+<span class="n">conf_idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">confs</span><span class="p">)</span> <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="s1">'chair'</span><span class="p">]</span>
+<span class="n">shuffle</span><span class="p">(</span><span class="n">conf_idx</span><span class="p">)</span>
+
+<span class="n">viewer</span> <span class="o">=</span> <span class="n">py3Dmol</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToMolBlock</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">confId</span><span class="o">=</span><span class="n">conf_idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="s1">'mol'</span><span class="p">)</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s2">"stick"</span><span class="p">:{}})</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">zoomTo</span><span class="p">()</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<div id="3dmolviewer_1614238671603947" style="position: relative; width: 300px; height: 300px">
+        <p id="3dmolwarning_1614238671603947" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+        <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
+        </div>
+<script>
+
+var loadScriptAsync = function(uri){
+  return new Promise((resolve, reject) => {
+    var tag = document.createElement('script');
+    tag.src = uri;
+    tag.async = true;
+    tag.onload = () => {
+      resolve();
+    };
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+});
+};
+
+if(typeof $3Dmolpromise === 'undefined') {
+$3Dmolpromise = null;
+  $3Dmolpromise = loadScriptAsync('https://3dmol.org/build/3Dmol.js');
+}
+
+var viewer_1614238671603947 = null;
+var warn = document.getElementById("3dmolwarning_1614238671603947");
+if(warn) {
+    warn.parentNode.removeChild(warn);
+}
+$3Dmolpromise.then(function() {
+viewer_1614238671603947 = $3Dmol.createViewer($("#3dmolviewer_1614238671603947"),{backgroundColor:"white"});
+viewer_1614238671603947.zoomTo();
+	viewer_1614238671603947.addModel("\n     RDKit          3D\n\n  6  6  0  0  0  0  0  0  0  0999 V2000\n    0.3943   -1.3474   -0.1414 N   0  0  0  0  0  0  0  0  0  4  0  0\n   -0.8830   -0.9668   -0.6645 C   0  0  0  0  0  0  0  0  0  3  0  0\n   -1.3960    0.3473   -0.0939 C   0  0  0  0  0  0  0  0  0  2  0  0\n   -0.3342    1.3255   -0.2589 N   0  0  0  0  0  0  0  0  0  1  0  0\n    0.8390    0.9464    0.5215 C   0  0  0  0  0  0  0  0  0  6  0  0\n    1.3798   -0.3051   -0.1534 C   0  0  0  0  0  0  0  0  0  5  0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  5  6  1  0\n  6  1  1  0\nM  END\n","mol");
+	viewer_1614238671603947.setStyle({"stick": {}});
+	viewer_1614238671603947.zoomTo();
+viewer_1614238671603947.render();
+});
+</script>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>And a boat conformation:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">shuffle</span>
+<span class="n">conf_idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">confs</span><span class="p">)</span> <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="s1">'boat'</span><span class="p">]</span>
+<span class="n">shuffle</span><span class="p">(</span><span class="n">conf_idx</span><span class="p">)</span>
+
+<span class="n">viewer</span> <span class="o">=</span> <span class="n">py3Dmol</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToMolBlock</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">confId</span><span class="o">=</span><span class="n">conf_idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="s1">'mol'</span><span class="p">)</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s2">"stick"</span><span class="p">:{}})</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">zoomTo</span><span class="p">()</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<div id="3dmolviewer_1614238672430392" style="position: relative; width: 300px; height: 300px">
+        <p id="3dmolwarning_1614238672430392" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+        <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
+        </div>
+<script>
+
+var loadScriptAsync = function(uri){
+  return new Promise((resolve, reject) => {
+    var tag = document.createElement('script');
+    tag.src = uri;
+    tag.async = true;
+    tag.onload = () => {
+      resolve();
+    };
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+});
+};
+
+if(typeof $3Dmolpromise === 'undefined') {
+$3Dmolpromise = null;
+  $3Dmolpromise = loadScriptAsync('https://3dmol.org/build/3Dmol.js');
+}
+
+var viewer_1614238672430392 = null;
+var warn = document.getElementById("3dmolwarning_1614238672430392");
+if(warn) {
+    warn.parentNode.removeChild(warn);
+}
+$3Dmolpromise.then(function() {
+viewer_1614238672430392 = $3Dmol.createViewer($("#3dmolviewer_1614238672430392"),{backgroundColor:"white"});
+viewer_1614238672430392.zoomTo();
+	viewer_1614238672430392.addModel("\n     RDKit          3D\n\n  6  6  0  0  0  0  0  0  0  0999 V2000\n    1.0573    0.8822    0.6778 N   0  0  0  0  0  0  0  0  0  4  0  0\n    1.2464   -0.3231   -0.1160 C   0  0  0  0  0  0  0  0  0  3  0  0\n    0.3009   -1.3578    0.4772 C   0  0  0  0  0  0  0  0  0  2  0  0\n   -1.0668   -0.9266    0.3369 N   0  0  0  0  0  0  0  0  0  1  0  0\n   -1.2085    0.4154   -0.1585 C   0  0  0  0  0  0  0  0  0  6  0  0\n   -0.3292    1.3099    0.7015 C   0  0  0  0  0  0  0  0  0  5  0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  5  6  1  0\n  6  1  1  0\nM  END\n","mol");
+	viewer_1614238672430392.setStyle({"stick": {}});
+	viewer_1614238672430392.zoomTo();
+viewer_1614238672430392.render();
+});
+</script>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>And finally a twisted conformation:</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">shuffle</span>
+<span class="n">conf_idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">confs</span><span class="p">)</span> <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="s1">'twisted'</span><span class="p">]</span>
+<span class="n">shuffle</span><span class="p">(</span><span class="n">conf_idx</span><span class="p">)</span>
+
+<span class="n">viewer</span> <span class="o">=</span> <span class="n">py3Dmol</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToMolBlock</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">confId</span><span class="o">=</span><span class="n">conf_idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="s1">'mol'</span><span class="p">)</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s2">"stick"</span><span class="p">:{}})</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">zoomTo</span><span class="p">()</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<div id="3dmolviewer_1614238673294403" style="position: relative; width: 300px; height: 300px">
+        <p id="3dmolwarning_1614238673294403" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+        <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
+        </div>
+<script>
+
+var loadScriptAsync = function(uri){
+  return new Promise((resolve, reject) => {
+    var tag = document.createElement('script');
+    tag.src = uri;
+    tag.async = true;
+    tag.onload = () => {
+      resolve();
+    };
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+});
+};
+
+if(typeof $3Dmolpromise === 'undefined') {
+$3Dmolpromise = null;
+  $3Dmolpromise = loadScriptAsync('https://3dmol.org/build/3Dmol.js');
+}
+
+var viewer_1614238673294403 = null;
+var warn = document.getElementById("3dmolwarning_1614238673294403");
+if(warn) {
+    warn.parentNode.removeChild(warn);
+}
+$3Dmolpromise.then(function() {
+viewer_1614238673294403 = $3Dmol.createViewer($("#3dmolviewer_1614238673294403"),{backgroundColor:"white"});
+viewer_1614238673294403.zoomTo();
+	viewer_1614238673294403.addModel("\n     RDKit          3D\n\n  6  6  0  0  0  0  0  0  0  0999 V2000\n   -0.9509    1.0001    0.1659 N   0  0  0  0  0  0  0  0  0  4  0  0\n   -1.3615   -0.3164   -0.2558 C   0  0  0  0  0  0  0  0  0  3  0  0\n   -0.3442   -1.3503    0.0892 C   0  0  0  0  0  0  0  0  0  2  0  0\n    1.0032   -1.0161   -0.1892 N   0  0  0  0  0  0  0  0  0  1  0  0\n    1.3238    0.3075   -0.5077 C   0  0  0  0  0  0  0  0  0  6  0  0\n    0.3296    1.3753   -0.3177 C   0  0  0  0  0  0  0  0  0  5  0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  5  6  1  0\n  6  1  1  0\nM  END\n","mol");
+	viewer_1614238673294403.setStyle({"stick": {}});
+	viewer_1614238673294403.zoomTo();
+viewer_1614238673294403.render();
+});
+</script>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Optimize-Geometry-using-MMFF">
+<a class="anchor" href="#Optimize-Geometry-using-MMFF" aria-hidden="true"><span class="octicon octicon-link"></span></a>Optimize Geometry using MMFF<a class="anchor-link" href="#Optimize-Geometry-using-MMFF"> </a>
+</h1>
+<p>Optimizing the Geometry using MMFF does the number of chair conformations and reduces twisted conformers.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">conf</span> <span class="ow">in</span> <span class="n">mol</span><span class="o">.</span><span class="n">GetConformers</span><span class="p">():</span>
+    <span class="n">AllChem</span><span class="o">.</span><span class="n">MMFFOptimizeMolecule</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">confId</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">GetId</span><span class="p">())</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">confs</span> <span class="o">=</span> <span class="n">ring_conformers</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+<span class="n">Counter</span><span class="p">(</span><span class="n">confs</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Counter({'chair': 253, 'twisted': 247})</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Still about 50% of the conformers remain in the twisted conformation.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">shuffle</span>
+<span class="n">conf_idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">confs</span><span class="p">)</span> <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="s1">'twisted'</span><span class="p">]</span>
+<span class="n">shuffle</span><span class="p">(</span><span class="n">conf_idx</span><span class="p">)</span>
+
+<span class="n">viewer</span> <span class="o">=</span> <span class="n">py3Dmol</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">addModel</span><span class="p">(</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolToMolBlock</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">confId</span><span class="o">=</span><span class="n">conf_idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="s1">'mol'</span><span class="p">)</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">setStyle</span><span class="p">({</span><span class="s2">"stick"</span><span class="p">:{}})</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">zoomTo</span><span class="p">()</span>
+<span class="n">viewer</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea ">
+<div id="3dmolviewer_161423876500316" style="position: relative; width: 300px; height: 300px">
+        <p id="3dmolwarning_161423876500316" style="background-color:#ffcccc;color:black">You appear to be running in JupyterLab (or JavaScript failed to load for some other reason).  You need to install the 3dmol extension: <br>
+        <tt>jupyter labextension install jupyterlab_3dmol</tt></p>
+        </div>
+<script>
+
+var loadScriptAsync = function(uri){
+  return new Promise((resolve, reject) => {
+    var tag = document.createElement('script');
+    tag.src = uri;
+    tag.async = true;
+    tag.onload = () => {
+      resolve();
+    };
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+});
+};
+
+if(typeof $3Dmolpromise === 'undefined') {
+$3Dmolpromise = null;
+  $3Dmolpromise = loadScriptAsync('https://3dmol.org/build/3Dmol.js');
+}
+
+var viewer_161423876500316 = null;
+var warn = document.getElementById("3dmolwarning_161423876500316");
+if(warn) {
+    warn.parentNode.removeChild(warn);
+}
+$3Dmolpromise.then(function() {
+viewer_161423876500316 = $3Dmol.createViewer($("#3dmolviewer_161423876500316"),{backgroundColor:"white"});
+viewer_161423876500316.zoomTo();
+	viewer_161423876500316.addModel("\n     RDKit          3D\n\n  6  6  0  0  0  0  0  0  0  0999 V2000\n   -0.3183    1.4640   -0.2197 N   0  0  0  0  0  0  0  0  0  4  0  0\n   -1.2549    0.3817    0.0691 C   0  0  0  0  0  0  0  0  0  3  0  0\n   -1.0011   -0.8791   -0.7457 C   0  0  0  0  0  0  0  0  0  2  0  0\n    0.3183   -1.4640   -0.5239 N   0  0  0  0  0  0  0  0  0  1  0  0\n    1.2889   -0.4447   -0.1354 C   0  0  0  0  0  0  0  0  0  6  0  0\n    0.9671    0.9421   -0.6752 C   0  0  0  0  0  0  0  0  0  5  0  0\n  1  2  1  0\n  2  3  1  0\n  3  4  1  0\n  4  5  1  0\n  5  6  1  0\n  6  1  1  0\nM  END\n","mol");
+	viewer_161423876500316.setStyle({"stick": {}});
+	viewer_161423876500316.zoomTo();
+viewer_161423876500316.render();
+});
+</script>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="ETKDG-version-3">
+<a class="anchor" href="#ETKDG-version-3" aria-hidden="true"><span class="octicon octicon-link"></span></a>ETKDG version 3<a class="anchor-link" href="#ETKDG-version-3"> </a>
+</h1>
+<p>I commented this issue on Greg's blog and was suggested to try ETKDG version 3 algorithm <a href="ref">https://pubs.acs.org/doi/abs/10.1021/acs.jcim.0c00025</a>. Here's the result.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">params</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">rdDistGeom</span><span class="o">.</span><span class="n">srETKDGv3</span><span class="p">()</span> 
+<span class="n">params</span><span class="o">.</span><span class="n">randomSeed</span> <span class="o">=</span> <span class="mh">0xf00d</span>
+
+<span class="n">cids</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">EmbedMultipleConfs</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">numConfs</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">confs</span> <span class="o">=</span> <span class="n">ring_conformers</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+<span class="n">Counter</span><span class="p">(</span><span class="n">confs</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Counter({'chair': 222, 'twisted': 195, 'boat': 83})</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="k">for</span> <span class="n">conf</span> <span class="ow">in</span> <span class="n">mol</span><span class="o">.</span><span class="n">GetConformers</span><span class="p">():</span>
+    <span class="n">AllChem</span><span class="o">.</span><span class="n">MMFFOptimizeMolecule</span><span class="p">(</span><span class="n">mol</span><span class="p">,</span> <span class="n">confId</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">GetId</span><span class="p">())</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">confs</span> <span class="o">=</span> <span class="n">ring_conformers</span><span class="p">(</span><span class="n">mol</span><span class="p">)</span>
+<span class="n">Counter</span><span class="p">(</span><span class="n">confs</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>Counter({'chair': 267, 'twisted': 233})</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>So, I got 222 chair (44%), 83 boat (16%), and 195 twisted (39%) conformers with just ETKDGv3 algorithm, but MMFF optimization slightly improved chair conformations. However, optimization also increased twisted conformations.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Conclusion">
+<a class="anchor" href="#Conclusion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusion<a class="anchor-link" href="#Conclusion"> </a>
+</h1>
+<p>I have used piperazine as an example because the molecule I was working had one, but I imagine cyclohexane may have the similar issue. The new ETKDG v3 algorithm does a good job getting chair conformation without FF optimization, but I wish I could get chair conformation most of the time. I have not looked into how RDKit's ETKDG algorithm is implemented yet. If it is simple, I might be able to contribute. Otherwise, I can use the conformation checker I used here to filter out non-chair conformers.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="sunhwan/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/2021/02/24/RDKit-ETKDG-Piperazine.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>Computational chemist. Personal blog for code and science.</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/sunhwan" title="sunhwan"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/sunhwan" title="sunhwan"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
