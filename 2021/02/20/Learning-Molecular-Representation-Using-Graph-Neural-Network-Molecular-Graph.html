@@ -1778,7 +1778,7 @@ $$h_{vw}^0 = \tau (W_i \mathrm{cat} (x_v, e_{vw}))$$
 </h2>
 <p>The message passing phase consists of $T$ steps of composing messages and hidden state according to the message function and the update function.</p>
 <p>
-$$m_v^{t+1} = \large\sum_{k\in\{N(v)w\}}^{} h_{vw}^t$$
+$$m_{vw}^{t+1} = \large\sum_{k\in\{N(v)w\}}^{} h_{kv}^t$$
 </p>
 <p>
 $$h_{vw}^{t+1} = \tau (h_{vw}^0 + W_m m_{vw}^{t+1})$$
@@ -1787,45 +1787,28 @@ $$h_{vw}^{t+1} = \tau (h_{vw}^0 + W_m m_{vw}^{t+1})$$
 
 </div>
 </div>
-</div>
-    
-    
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
+</div>def index_select_ND(source: torch.Tensor, index: torch.Tensor) -&gt; torch.Tensor:
+    """Selects the message features from source corresponding to the atom or bond indices in index.
+    """
+    index_size = index.size()             # (num_atoms/num_bonds, max_num_bonds)
+    suffix_dim = source.size()[1:]        # (hidden_size,)
+    final_size = index_size + suffix_dim  # (num_atoms/num_bonds, max_num_bonds, hidden_size)
 
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">index_select_ND</span><span class="p">(</span><span class="n">source</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
-    <span class="sd">"""Selects the message features from source corresponding to the atom or bond indices in index.</span>
-<span class="sd">    """</span>
-    <span class="n">index_size</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>             <span class="c1"># (num_atoms/num_bonds, max_num_bonds)</span>
-    <span class="n">suffix_dim</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">size</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]</span>        <span class="c1"># (hidden_size,)</span>
-    <span class="n">final_size</span> <span class="o">=</span> <span class="n">index_size</span> <span class="o">+</span> <span class="n">suffix_dim</span>  <span class="c1"># (num_atoms/num_bonds, max_num_bonds, hidden_size)</span>
-
-    <span class="n">target</span> <span class="o">=</span> <span class="n">source</span><span class="o">.</span><span class="n">index_select</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="c1"># (num_atoms/num_bonds * max_num_bonds, hidden_size)</span>
-    <span class="n">target</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">final_size</span><span class="p">)</span>                          <span class="c1"># (num_atoms/num_bonds, max_num_bonds, hidden_size)</span>
-    <span class="k">return</span> <span class="n">target</span>
+    target = source.index_select(dim=0, index=index.view(-1)) # (num_atoms/num_bonds * max_num_bonds, hidden_size)
+    target = target.view(final_size)                          # (num_atoms/num_bonds, max_num_bonds, hidden_size)
+    return target
 
 
-<span class="k">for</span> <span class="n">depth</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
-    <span class="c1"># m(a1 -&gt; a2) = [sum_{a0 \in nei(a1)} m(a0 -&gt; a1)] - m(a2 -&gt; a1)</span>
-    <span class="c1"># message      a_message = sum(nei_a_message)      rev_message</span>
-    <span class="n">nei_a_message</span> <span class="o">=</span> <span class="n">index_select_ND</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">a2b</span><span class="p">)</span>  <span class="c1"># num_atoms x max_num_bonds x hidden</span>
-    <span class="n">a_message</span> <span class="o">=</span> <span class="n">nei_a_message</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>           <span class="c1"># num_atoms x hidden</span>
-    <span class="n">rev_message</span> <span class="o">=</span> <span class="n">message</span><span class="p">[</span><span class="n">b2revb</span><span class="p">]</span>                  <span class="c1"># num_bonds x hidden</span>
-    <span class="n">message</span> <span class="o">=</span> <span class="n">a_message</span><span class="p">[</span><span class="n">b2a</span><span class="p">]</span> <span class="o">-</span> <span class="n">rev_message</span>         <span class="c1"># num_bonds x hidden</span>
+for depth in range(3):
+    # m(a1 -&gt; a2) = [sum_{a0 \in nei(a1)} m(a0 -&gt; a1)] - m(a2 -&gt; a1)
+    # message      a_message = sum(nei_a_message)      rev_message
+    nei_a_message = index_select_ND(message, a2b)  # num_atoms x max_num_bonds x hidden
+    a_message = nei_a_message.sum(dim=1)           # num_atoms x hidden
+    rev_message = message[b2revb]                  # num_bonds x hidden
+    message = a_message[b2a] - rev_message         # num_bonds x hidden
 
-    <span class="n">message</span> <span class="o">=</span> <span class="n">W_h</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-    <span class="n">message</span> <span class="o">=</span> <span class="n">act_func</span><span class="p">(</span><span class="nb">input</span> <span class="o">+</span> <span class="n">message</span><span class="p">)</span>            <span class="c1"># num_bonds x hidden_size</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
-    
-
+    message = W_h(message)
+    message = act_func(input + message)            # num_bonds x hidden_size
     
     
 <div class="cell border-box-sizing code_cell rendered">
