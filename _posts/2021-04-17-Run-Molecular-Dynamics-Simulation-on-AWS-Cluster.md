@@ -60,7 +60,7 @@ Another important update to be made is the `[queue]` and `[compute_resource]` se
     min_count = 0
     initial_count = 0
     max_count = 10
-    spot_price = 1.0
+    spot_price = 1.5
 
     [compute_resource cpu]
     instance_type = c5.2xlarge
@@ -69,7 +69,7 @@ Another important update to be made is the `[queue]` and `[compute_resource]` se
     max_count = 10
     spot_price = 0.5
 
-Here, I'm defining `cpu` and `gpu` queues that use `c5.2xlarge` instance and `p3.2xlarge` instances, respectively. I asked both queue to utilize spot instances and the maximum bidding price is set to 0.5 and 1.0 USD for `cpu` and `gpu`.
+Here, I'm defining `cpu` and `gpu` queues that use `c5.2xlarge` instance and `p3.2xlarge` instances, respectively. I asked both queue to utilize spot instances and the maximum bidding price is set to 0.5 and 1.5 USD for `cpu` and `gpu`.
 
 The full example configuration file can be found in [here](https://gist.github.com/sunhwan/9faafdc37cd29c6b8d16f8689e618cc0).
 
@@ -148,3 +148,21 @@ I have built an example MD simulation system using Lysozyme (PDB:181L). You can 
 You can monitor the progress of job using `squeue` and `sinfo` commands. If your compute node is not running, you may want to check your EC2 instance limit from your AWS EC2 dashboard. They are usually very low by default. For me, `All P Spot Instance` vCPU was limited to 4, but `p3.2xlarge` instance have 8 vCPU, hence compute node was not able to start and cycled through starting and failing. Make sure the instance type have enough amount of vCPU allocatable.
 
 The MD simulation in my example file is set to run a short equilibration and 10 ns of production simulation. The simulation system contains 43K atoms and the task took about two hours, so about 120 ns/day of throughput on `p3` instance. At the time the task ran, the `p3` spot instance cost about USD $0.918/hr, so the 10 ns MD simulation cost us about USD $1.8 from the GPU instance. You will have additional cost from running master node (`t2.micro` cost $0.0116/hr ~ $0.27/day), using the EBS disk storage ($0.015/GB/month ~ $0.25/day for 500GB), and network data transfer. Clearly, the compute cost is the bulk of the cost. Running the same task using the on-demand `p3.2xlarge` instance would have cost about USD $6, which is about 3x saving by using the spot instance.
+
+When you are finished using the cluster, you could put it to sleep using this command.
+
+    pcluster stop cloudmd
+
+This stops running master node and EBS volume, however, does not remove them, hence some small cost would still incur in this state. You can delete the cluster completely using the command:
+
+    pcluster delete cloudmd
+
+Note that this will also remove EBS volume as well, therefore you want to create a backup of the volume before doing this. If you create a snapshot of the volume, you can use the snapshot to build the EBS volume in the future.
+
+## Conclusion
+
+AWS `parallel-cluster` provide a very easy way to create your own cluster in just a minutes. The cluster can be configured in various ways to fit your needs whether you are interested in machine learning or MD simulation, or some other task (render farm?). The compute nodes are only brought up when there's a task waiting in the scheduler queue, so the total cost is minimum. No more turning up and down the EC2 instance by yourself.
+
+You can further save the cost by using the spot instance with the risk of your node shutdown middle of the task. Slurm scheduler let the job back in the queue if that happens, so you want to write the Slurm job script to take care of the restart.
+
+`parallel-cluster` really did a good job at making people to tap into cloud infrastructure easily and cheaply. I started using this tool when it was `cfncluster` and it came a long way. I really appreciate the team for continuing development in this package. ❤️
