@@ -93,7 +93,7 @@ window.onload = wrap_img;
        • <span class="read-time" title="Estimated read time">
     
     
-      6 min read
+      7 min read
     
 </span></p>
 
@@ -118,6 +118,7 @@ window.onload = wrap_img;
 <li class="toc-entry toc-h2"><a href="#update-configuration">Update Configuration</a></li>
 <li class="toc-entry toc-h2"><a href="#create-cluster">Create Cluster</a></li>
 <li class="toc-entry toc-h2"><a href="#run-md-simulation">Run MD Simulation</a></li>
+<li class="toc-entry toc-h2"><a href="#conclusion">Conclusion</a></li>
 </ul><p><strong>AWS and other cloud platform offers flexible computing resources at a reasonable price. There are many ways to take advantage of such cloud resource. Here, I’m going to show you how to setup a traditional cluster on AWS using <code class="language-plaintext highlighter-rouge">parallel-cluster</code> and perform MD simulation on it.</strong></p>
 
 <h2 id="prerequisite">
@@ -176,7 +177,7 @@ instance_type = p3.2xlarge
 min_count = 0
 initial_count = 0
 max_count = 10
-spot_price = 1.0
+spot_price = 1.5
 
 [compute_resource cpu]
 instance_type = c5.2xlarge
@@ -186,7 +187,7 @@ max_count = 10
 spot_price = 0.5
 </code></pre></div></div>
 
-<p>Here, I’m defining <code class="language-plaintext highlighter-rouge">cpu</code> and <code class="language-plaintext highlighter-rouge">gpu</code> queues that use <code class="language-plaintext highlighter-rouge">c5.2xlarge</code> instance and <code class="language-plaintext highlighter-rouge">p3.2xlarge</code> instances, respectively. I asked both queue to utilize spot instances and the maximum bidding price is set to 0.5 and 1.0 USD for <code class="language-plaintext highlighter-rouge">cpu</code> and <code class="language-plaintext highlighter-rouge">gpu</code>.</p>
+<p>Here, I’m defining <code class="language-plaintext highlighter-rouge">cpu</code> and <code class="language-plaintext highlighter-rouge">gpu</code> queues that use <code class="language-plaintext highlighter-rouge">c5.2xlarge</code> instance and <code class="language-plaintext highlighter-rouge">p3.2xlarge</code> instances, respectively. I asked both queue to utilize spot instances and the maximum bidding price is set to 0.5 and 1.5 USD for <code class="language-plaintext highlighter-rouge">cpu</code> and <code class="language-plaintext highlighter-rouge">gpu</code>.</p>
 
 <p>The full example configuration file can be found in <a href="https://gist.github.com/sunhwan/9faafdc37cd29c6b8d16f8689e618cc0">here</a>.</p>
 
@@ -271,6 +272,27 @@ sbatch run.sh
 <p>You can monitor the progress of job using <code class="language-plaintext highlighter-rouge">squeue</code> and <code class="language-plaintext highlighter-rouge">sinfo</code> commands. If your compute node is not running, you may want to check your EC2 instance limit from your AWS EC2 dashboard. They are usually very low by default. For me, <code class="language-plaintext highlighter-rouge">All P Spot Instance</code> vCPU was limited to 4, but <code class="language-plaintext highlighter-rouge">p3.2xlarge</code> instance have 8 vCPU, hence compute node was not able to start and cycled through starting and failing. Make sure the instance type have enough amount of vCPU allocatable.</p>
 
 <p>The MD simulation in my example file is set to run a short equilibration and 10 ns of production simulation. The simulation system contains 43K atoms and the task took about two hours, so about 120 ns/day of throughput on <code class="language-plaintext highlighter-rouge">p3</code> instance. At the time the task ran, the <code class="language-plaintext highlighter-rouge">p3</code> spot instance cost about USD $0.918/hr, so the 10 ns MD simulation cost us about USD $1.8 from the GPU instance. You will have additional cost from running master node (<code class="language-plaintext highlighter-rouge">t2.micro</code> cost $0.0116/hr ~ $0.27/day), using the EBS disk storage ($0.015/GB/month ~ $0.25/day for 500GB), and network data transfer. Clearly, the compute cost is the bulk of the cost. Running the same task using the on-demand <code class="language-plaintext highlighter-rouge">p3.2xlarge</code> instance would have cost about USD $6, which is about 3x saving by using the spot instance.</p>
+
+<p>When you are finished using the cluster, you could put it to sleep using this command.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pcluster stop cloudmd
+</code></pre></div></div>
+
+<p>This stops running master node and EBS volume, however, does not remove them, hence some small cost would still incur in this state. You can delete the cluster completely using the command:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pcluster delete cloudmd
+</code></pre></div></div>
+
+<p>Note that this will also remove EBS volume as well, therefore you want to create a backup of the volume before doing this. If you create a snapshot of the volume, you can use the snapshot to build the EBS volume in the future.</p>
+
+<h2 id="conclusion">
+<a class="anchor" href="#conclusion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusion</h2>
+
+<p>AWS <code class="language-plaintext highlighter-rouge">parallel-cluster</code> provide a very easy way to create your own cluster in just a minutes. The cluster can be configured in various ways to fit your needs whether you are interested in machine learning or MD simulation, or some other task (render farm?). The compute nodes are only brought up when there’s a task waiting in the scheduler queue, so the total cost is minimum. No more turning up and down the EC2 instance by yourself.</p>
+
+<p>You can further save the cost by using the spot instance with the risk of your node shutdown middle of the task. Slurm scheduler let the job back in the queue if that happens, so you want to write the Slurm job script to take care of the restart.</p>
+
+<p><code class="language-plaintext highlighter-rouge">parallel-cluster</code> really did a good job at making people to tap into cloud infrastructure easily and cheaply. I started using this tool when it was <code class="language-plaintext highlighter-rouge">cfncluster</code> and it came a long way. I really appreciate the team for continuing development in this package. ❤️</p>
 
   </div><!-- from https://github.com/utterance/utterances -->
 <script src="https://utteranc.es/client.js"
