@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Run Molecular Dynamics Simulation on AWS Cluster | Sunhwan Jo</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Run Molecular Dynamics Simulation on AWS Cluster" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Setup AWS cluster using parallel-cluster package and run MD simulation on the AWS cluster" />
+<meta property="og:description" content="Setup AWS cluster using parallel-cluster package and run MD simulation on the AWS cluster" />
+<link rel="canonical" href="https://sunhwan.github.io/blog/2021/04/17/Run-Molecular-Dynamics-Simulation-on-AWS-Cluster.html" />
+<meta property="og:url" content="https://sunhwan.github.io/blog/2021/04/17/Run-Molecular-Dynamics-Simulation-on-AWS-Cluster.html" />
+<meta property="og:site_name" content="Sunhwan Jo" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-04-17T00:00:00-05:00" />
+<script type="application/ld+json">
+{"mainEntityOfPage":{"@type":"WebPage","@id":"https://sunhwan.github.io/blog/2021/04/17/Run-Molecular-Dynamics-Simulation-on-AWS-Cluster.html"},"url":"https://sunhwan.github.io/blog/2021/04/17/Run-Molecular-Dynamics-Simulation-on-AWS-Cluster.html","@type":"BlogPosting","headline":"Run Molecular Dynamics Simulation on AWS Cluster","dateModified":"2021-04-17T00:00:00-05:00","datePublished":"2021-04-17T00:00:00-05:00","description":"Setup AWS cluster using parallel-cluster package and run MD simulation on the AWS cluster","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://sunhwan.github.io/blog/feed.xml" title="Sunhwan Jo" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Sunhwan Jo</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Run Molecular Dynamics Simulation on AWS Cluster</h1><p class="page-description">Setup AWS cluster using parallel-cluster package and run MD simulation on the AWS cluster</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-04-17T00:00:00-05:00" itemprop="datePublished">
+        Apr 17, 2021
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      6 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#Cloud">Cloud</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/blog/categories/#MD Simulation">MD Simulation</a>
+        
+      
+      </p>
+    
+
+    </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h2"><a href="#prerequisite">Prerequisite</a></li>
+<li class="toc-entry toc-h2"><a href="#initial-configuration">Initial Configuration</a></li>
+<li class="toc-entry toc-h2"><a href="#update-configuration">Update Configuration</a></li>
+<li class="toc-entry toc-h2"><a href="#create-cluster">Create Cluster</a></li>
+<li class="toc-entry toc-h2"><a href="#run-md-simulation">Run MD Simulation</a></li>
+</ul><p><strong>AWS and other cloud platform offers flexible computing resources at a reasonable price. There are many ways to take advantage of such cloud resource. Here, I’m going to show you how to setup a traditional cluster on AWS using <code class="language-plaintext highlighter-rouge">parallel-cluster</code> and perform MD simulation on it.</strong></p>
+
+<h2 id="prerequisite">
+<a class="anchor" href="#prerequisite" aria-hidden="true"><span class="octicon octicon-link"></span></a>Prerequisite</h2>
+
+<p>To use AWS <code class="language-plaintext highlighter-rouge">parallel-cluster</code>, you will have to install AWS CLI (command line interface). Install using <code class="language-plaintext highlighter-rouge">pip install awscli</code> and configure the CLI using <code class="language-plaintext highlighter-rouge">aws configure</code> command. It will ask AWS access key ID and passphrase.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ aws configure
+AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
+AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+Default region name [us-east-1]: us-east-1
+Default output format [None]:
+</code></pre></div></div>
+
+<p>Note that <code class="language-plaintext highlighter-rouge">pip</code> installs AWS CLI version 1 and there is a new major version of AWS CLI (version 2), which can only installed using a package. The CLI version 1 still works, but in the future it may be deprecated. See <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html">here</a> for more information.</p>
+
+<p>After installing AWS CLI, install <code class="language-plaintext highlighter-rouge">parallel-cluster</code> using <code class="language-plaintext highlighter-rouge">pip</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pip install parallelcluster
+</code></pre></div></div>
+
+<h2 id="initial-configuration">
+<a class="anchor" href="#initial-configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Initial Configuration</h2>
+
+<p>First create a configuration file using <code class="language-plaintext highlighter-rouge">pcluster configure</code> command. This command creates a configuration file, which can be edited later. A detailed explanation can be found in their <a href="https://docs.aws.amazon.com/parallelcluster/latest/ug/getting-started-configuring-parallelcluster.html">documentation</a>, so I’ll not cover these in depth.</p>
+
+<p>I chose default option for the most part: <code class="language-plaintext highlighter-rouge">slurm</code> for the scheduler, <code class="language-plaintext highlighter-rouge">ailinux2</code> for the operating system, both master node and compute node as <code class="language-plaintext highlighter-rouge">t2.micro</code> (we will change this later), and create VPC automatically with master node in public and compute node in private network option. The configuration file will be saved in <code class="language-plaintext highlighter-rouge">~/.pcluster/config</code>.</p>
+
+<h2 id="update-configuration">
+<a class="anchor" href="#update-configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Update Configuration</h2>
+
+<p>Let’s update the default configuration file saved in <code class="language-plaintext highlighter-rouge">~/.pcluster/config</code> to what we want. First, we want to add <code class="language-plaintext highlighter-rouge">[ebs]</code> section. AWS EBS (Elastic Block Storage) volume is mounted as NFS (Network File System) in all of compute node, so the files can be persistently stored.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ebs default]
+shared_dir = /shared
+volume_type = sc1
+volume_size = 500
+</code></pre></div></div>
+
+<p>Here, I’m asking 500 GB of HDD (<code class="language-plaintext highlighter-rouge">sc1</code>) to be mounted on <code class="language-plaintext highlighter-rouge">/shared</code> folder.</p>
+
+<p>Another important update to be made is the <code class="language-plaintext highlighter-rouge">[queue]</code> and <code class="language-plaintext highlighter-rouge">[compute_resource]</code> section.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[queue gpu]
+enable_efa = false
+compute_resource_settings = gpu
+compute_type = spot
+
+[queue cpu]
+enable_efa = false
+compute_resource_settings = cpu
+compute_type = spot
+
+[compute_resource gpu]
+instance_type = p3.2xlarge
+min_count = 0
+initial_count = 0
+max_count = 10
+spot_price = 1.0
+
+[compute_resource cpu]
+instance_type = c5.2xlarge
+min_count = 0
+initial_count = 0
+max_count = 10
+spot_price = 0.5
+</code></pre></div></div>
+
+<p>Here, I’m defining <code class="language-plaintext highlighter-rouge">cpu</code> and <code class="language-plaintext highlighter-rouge">gpu</code> queues that use <code class="language-plaintext highlighter-rouge">c5.2xlarge</code> instance and <code class="language-plaintext highlighter-rouge">p3.2xlarge</code> instances, respectively. I asked both queue to utilize spot instances and the maximum bidding price is set to 0.5 and 1.0 USD for <code class="language-plaintext highlighter-rouge">cpu</code> and <code class="language-plaintext highlighter-rouge">gpu</code>.</p>
+
+<p>The full example configuration file can be found in <a href="https://gist.github.com/sunhwan/9faafdc37cd29c6b8d16f8689e618cc0">here</a>.</p>
+
+<h2 id="create-cluster">
+<a class="anchor" href="#create-cluster" aria-hidden="true"><span class="octicon octicon-link"></span></a>Create Cluster</h2>
+
+<p>Let’s create the cluster named <code class="language-plaintext highlighter-rouge">cloudmd</code> using the configuration just created now by</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pcluster create cloudmd
+</code></pre></div></div>
+
+<p>Once the cluster is created, you can SSH into the cluster master node using the following command.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pcluster ssh cloudmd
+</code></pre></div></div>
+
+<p>If you know the public IP address of the master node, you can <code class="language-plaintext highlighter-rouge">ssh</code> directly to the node (check the AWS EC2 Dashboard). You should be able to see 500GB of EBS is mounted on <code class="language-plaintext highlighter-rouge">/shared</code> folder and two queues, <code class="language-plaintext highlighter-rouge">cpu</code> and <code class="language-plaintext highlighter-rouge">gpu</code>, are ready. The <code class="language-plaintext highlighter-rouge">gpu</code> queue is intended for running MD simulation and machine learning tasks using GPU whereas the <code class="language-plaintext highlighter-rouge">cpu</code> queue is ideal for the tasks that only requires CPUs, such as docking tasks.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ec2-user@ip-10-0-0-104 ~]$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+devtmpfs        2.0G     0  2.0G   0% /dev
+tmpfs           2.0G     0  2.0G   0% /dev/shm
+tmpfs           2.0G  532K  2.0G   1% /run
+tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup
+/dev/xvda1       25G   13G   13G  51% /
+/dev/xvdb       493G   73M  467G   1% /shared
+tmpfs           395M     0  395M   0% /run/user/1000
+
+[ec2-user@ip-10-0-0-104 ~]$ sinfo
+PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
+cpu          up   infinite     10  idle~ cpu-dy-c52xlarge-[1-10]
+gpu*         up   infinite     10  idle~ gpu-dy-p32xlarge-[1-10]
+</code></pre></div></div>
+
+<p>Note that there are no compute nodes currently running. Only when jobs are submitted and waiting in the queue, the compute node will bring up the compute nodes until jobs are all finished. This greatly reduces compute cost without manually bring the nodes up and down yourself.</p>
+
+<p>We plan to use the spot pricing, which will also reduce cost down further. You can check the historic spot instance pricing from this <a href="https://aws.amazon.com/ec2/spot/pricing/">link</a> or from the EC2 dashboard (see this <a href="https://sunhwan.github.io/blog/assets/examples/cloudmd/ec2_dashboard_spot_pricing_history.png">screenshot</a>).</p>
+
+<p>One down side of the spot pricing is that, when the cost of spot price goes over the maximum bid price we set, the node will be shut down. In that case, the Slurm scheduler will resubmit the job again automatically. If you set your Slurm job script to take care of the restart, your job will start running when the spot instance is available again.</p>
+
+<h2 id="run-md-simulation">
+<a class="anchor" href="#run-md-simulation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Run MD Simulation</h2>
+
+<p>Let’s first install MD simulation package, OpenMM, in our shared volume. We will use Miniconda as a package manager.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># download Miniconda
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+
+# install Miniconda
+/bin/bash Miniconda3-latest-Linux-x86_64.sh -b -p /shared/miniconda/
+
+# add Miniconda to your PATH
+export PATH=/shared/miniconda/bin:$PATH
+
+# install OpenMM
+conda install -c conda-forge openmm
+</code></pre></div></div>
+
+<p>I have built an example MD simulation system using Lysozyme (PDB:181L). You can download it from <a href="">here</a>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># download MD simulation system
+cd /shared
+wget https://sunhwan.github.io/blog/assets/examples/cloudmd/charmm-gui-181l-openmm.tar.gz
+tar -xvzf charmm-gui-181l-openmm.tar.gz
+
+# prepare Slurm job script
+cd charmm-gui-1894063249/openmm
+
+echo "#!/bin/bash
+#SBATCH --job-name=MD-example  # Job name
+#SBATCH --partition=gpu
+#SBATCH --ntasks=1             # Request 1 CPU
+#SBATCH --time=2:00:00         # Time limit hrs:min:sec
+#SBATCH --gpus=1               # Request 1 GPU
+export PATH=/shared/miniconda/bin:$PATH
+/bin/csh README" &gt; run.sh
+
+# submit the job script
+sbatch run.sh
+</code></pre></div></div>
+
+<p>You can monitor the progress of job using <code class="language-plaintext highlighter-rouge">squeue</code> and <code class="language-plaintext highlighter-rouge">sinfo</code> commands. If your compute node is not running, you may want to check your EC2 instance limit from your AWS EC2 dashboard. They are usually very low by default. For me, <code class="language-plaintext highlighter-rouge">All P Spot Instance</code> vCPU was limited to 4, but <code class="language-plaintext highlighter-rouge">p3.2xlarge</code> instance have 8 vCPU, hence compute node was not able to start and cycled through starting and failing. Make sure the instance type have enough amount of vCPU allocatable.</p>
+
+<p>The MD simulation in my example file is set to run a short equilibration and 10 ns of production simulation. The simulation system contains 43K atoms and the task took about two hours, so about 120 ns/day of throughput on <code class="language-plaintext highlighter-rouge">p3</code> instance. At the time the task ran, the <code class="language-plaintext highlighter-rouge">p3</code> spot instance cost about USD $0.918/hr, so the 10 ns MD simulation cost us about USD $1.8 from the GPU instance. You will have additional cost from running master node (<code class="language-plaintext highlighter-rouge">t2.micro</code> cost $0.0116/hr ~ $0.27/day), using the EBS disk storage ($0.015/GB/month ~ $0.25/day for 500GB), and network data transfer. Clearly, the compute cost is the bulk of the cost. Running the same task using the on-demand <code class="language-plaintext highlighter-rouge">p3.2xlarge</code> instance would have cost about USD $6, which is about 3x saving by using the spot instance.</p>
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="sunhwan/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/2021/04/17/Run-Molecular-Dynamics-Simulation-on-AWS-Cluster.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>Computational chemist. Personal blog for code and science.</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/sunhwan" title="sunhwan"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/sunhwan" title="sunhwan"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
