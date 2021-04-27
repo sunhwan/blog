@@ -277,7 +277,7 @@ $ aws s3 cp myjob.sh s3://&lt;bucket&gt;/myjob.sh
 
 <p>This time, I looked at how I can set up MD simulation using Docker container and AWS Batch as a scheduler. Using container is great because my simulation will always run at a controlled environment. In addition, we now don’t have to maintain the master node because container image can be tested/deployed from a laptop.</p>
 
-<p>Using AWS Batch and container does require more setup up front, however, if the tasks are well-defined and if the tasks do not change often, then it is a great way to simplify task setup and management. As an added benefit, all job definition/task submission can be done from a command line (using AWS CLI) or can be done progamatically using AWS API.</p>
+<p>Using AWS Batch and container does require more setup up front, however, if the tasks are well-defined and if the tasks do not change often, then it is a great way to simplify task setup and management. As an added benefit, all job definition/task submission can be done from a command line (using AWS CLI) or can be done progamatically using AWS API. It is probably very useful to set up some kind of high-throughput workflow that use MD simulation (e.g., docking -&gt; run MM/GBSA or some adaptive MD simulation algorithm) when it is coupled with workflow scripts such as AWS Step Function.</p>
 
 <p>One aspect that I find it challenging is how to bring files in and out of the container. I used S3 in this example, but I found this more cumbersome. Probably there are more convenient file storage options available for AWS container tasks.</p>
 
