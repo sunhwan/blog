@@ -10,13 +10,13 @@
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="Run MD simulation on a dockerized container and AWS Batch as a simple scheduler" />
 <meta property="og:description" content="Run MD simulation on a dockerized container and AWS Batch as a simple scheduler" />
-<link rel="canonical" href="https://sunhwan.github.io/blog/2021/04/25/Run-Molecular-Dynamics-Simulation-on-Container-and-AWS-Batch.html" />
-<meta property="og:url" content="https://sunhwan.github.io/blog/2021/04/25/Run-Molecular-Dynamics-Simulation-on-Container-and-AWS-Batch.html" />
+<link rel="canonical" href="https://sunhwan.github.io/blog/2021/04/27/Run-Molecular-Dynamics-Simulation-on-Container-and-AWS-Batch.html" />
+<meta property="og:url" content="https://sunhwan.github.io/blog/2021/04/27/Run-Molecular-Dynamics-Simulation-on-Container-and-AWS-Batch.html" />
 <meta property="og:site_name" content="Sunhwan Jo" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2021-04-25T00:00:00-05:00" />
+<meta property="article:published_time" content="2021-04-27T00:00:00-05:00" />
 <script type="application/ld+json">
-{"mainEntityOfPage":{"@type":"WebPage","@id":"https://sunhwan.github.io/blog/2021/04/25/Run-Molecular-Dynamics-Simulation-on-Container-and-AWS-Batch.html"},"url":"https://sunhwan.github.io/blog/2021/04/25/Run-Molecular-Dynamics-Simulation-on-Container-and-AWS-Batch.html","@type":"BlogPosting","headline":"Run Molecular Dynamics Simulation on Container and AWS Batch","dateModified":"2021-04-25T00:00:00-05:00","datePublished":"2021-04-25T00:00:00-05:00","description":"Run MD simulation on a dockerized container and AWS Batch as a simple scheduler","@context":"https://schema.org"}</script>
+{"mainEntityOfPage":{"@type":"WebPage","@id":"https://sunhwan.github.io/blog/2021/04/27/Run-Molecular-Dynamics-Simulation-on-Container-and-AWS-Batch.html"},"url":"https://sunhwan.github.io/blog/2021/04/27/Run-Molecular-Dynamics-Simulation-on-Container-and-AWS-Batch.html","@type":"BlogPosting","headline":"Run Molecular Dynamics Simulation on Container and AWS Batch","dateModified":"2021-04-27T00:00:00-05:00","datePublished":"2021-04-27T00:00:00-05:00","description":"Run MD simulation on a dockerized container and AWS Batch as a simple scheduler","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://sunhwan.github.io/blog/feed.xml" title="Sunhwan Jo" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
@@ -87,8 +87,8 @@ window.onload = wrap_img;
         <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
 
   <header class="post-header">
-    <h1 class="post-title p-name" itemprop="name headline">Run Molecular Dynamics Simulation on Container and AWS Batch</h1><p class="page-description">Run MD simulation on a dockerized container and AWS Batch as a simple scheduler</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-04-25T00:00:00-05:00" itemprop="datePublished">
-        Apr 25, 2021
+    <h1 class="post-title p-name" itemprop="name headline">Run Molecular Dynamics Simulation on Container and AWS Batch</h1><p class="page-description">Run MD simulation on a dockerized container and AWS Batch as a simple scheduler</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-04-27T00:00:00-05:00" itemprop="datePublished">
+        Apr 27, 2021
       </time>
        • <span class="read-time" title="Estimated read time">
     
@@ -193,7 +193,7 @@ RUN conda install -c conda-forge openmm
 
 <p>Let’s try a more general example. Let’s create a job definition that can take script (and input structure) from AWS S3, run MD simulation, and store the output back on the S3 storage.</p>
 
-<p><img src="/assets/figures/awsbatch.png" alt="AWS Arrangement"></p>
+<p><img src="/blog/assets/figures/awsbatch.png" alt="AWS Arrangement"></p>
 
 <p>To achieve this, we need to prepare several settings:</p>
 
@@ -264,7 +264,7 @@ $ aws s3 cp myjob.sh s3://&lt;bucket&gt;/myjob.sh
 
 <p>That’s a lot of boilerplate! All is left is to revise the job definition file to submit a job. Note that we need to supply the IAM role for S3 access and the environment variables for <code class="language-plaintext highlighter-rouge">fetch_and_run.sh</code> script. The job script should</p>
 
-<p><img src="/assets/figures/awsbatch_jobdefinition.png" alt="AWS Job Definition"></p>
+<p><img src="/blog/assets/figures/awsbatch_jobdefinition.png" alt="AWS Job Definition"></p>
 
 <p>A job submitted with this definition will sit in a job queue for a while (it took me more time because I selected spot pricing and it appears the price at the moment was higher than what I asked) then started running and finished in about an hour after running the simulation.</p>
 
@@ -289,7 +289,7 @@ $ aws s3 cp myjob.sh s3://&lt;bucket&gt;/myjob.sh
         theme="github-light"
         crossorigin="anonymous"
         async>
-</script><a class="u-url" href="/blog/2021/04/25/Run-Molecular-Dynamics-Simulation-on-Container-and-AWS-Batch.html" hidden></a>
+</script><a class="u-url" href="/blog/2021/04/27/Run-Molecular-Dynamics-Simulation-on-Container-and-AWS-Batch.html" hidden></a>
 </article>
       </div>
     </main><footer class="site-footer h-card">
