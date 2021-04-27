@@ -79,7 +79,7 @@ To check the output, you will have to check the log stream in the jobs detail pa
 
 Let's try a more general example. Let's create a job definition that can take script (and input structure) from AWS S3, run MD simulation, and store the output back on the S3 storage.
 
-![AWS Arrangement](/assets/figures/awsbatch.png)
+![AWS Arrangement](/blog/assets/figures/awsbatch.png)
 
 
 To achieve this, we need to prepare several settings:
@@ -140,7 +140,7 @@ To achieve this, we need to prepare several settings:
 
 That's a lot of boilerplate! All is left is to revise the job definition file to submit a job. Note that we need to supply the IAM role for S3 access and the environment variables for `fetch_and_run.sh` script. The job script should
 
-![AWS Job Definition](/assets/figures/awsbatch_jobdefinition.png)
+![AWS Job Definition](/blog/assets/figures/awsbatch_jobdefinition.png)
 
 A job submitted with this definition will sit in a job queue for a while (it took me more time because I selected spot pricing and it appears the price at the moment was higher than what I asked) then started running and finished in about an hour after running the simulation.
 
