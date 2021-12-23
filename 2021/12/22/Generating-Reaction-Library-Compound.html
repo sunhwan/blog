@@ -1,0 +1,1801 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="twitter:card" content="summary_large_image" /><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Generating Reaction Library Compounds | Sunhwan Jo</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Generating Reaction Library Compounds" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Generating Reaction Library Compounds" />
+<meta property="og:description" content="Generating Reaction Library Compounds" />
+<link rel="canonical" href="https://sunhwan.github.io/blog/2021/12/22/Generating-Reaction-Library-Compound.html" />
+<meta property="og:url" content="https://sunhwan.github.io/blog/2021/12/22/Generating-Reaction-Library-Compound.html" />
+<meta property="og:site_name" content="Sunhwan Jo" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-12-22T00:00:00-06:00" />
+<script type="application/ld+json">
+{"mainEntityOfPage":{"@type":"WebPage","@id":"https://sunhwan.github.io/blog/2021/12/22/Generating-Reaction-Library-Compound.html"},"url":"https://sunhwan.github.io/blog/2021/12/22/Generating-Reaction-Library-Compound.html","@type":"BlogPosting","headline":"Generating Reaction Library Compounds","dateModified":"2021-12-22T00:00:00-06:00","datePublished":"2021-12-22T00:00:00-06:00","description":"Generating Reaction Library Compounds","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/blog/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="https://sunhwan.github.io/blog/feed.xml" title="Sunhwan Jo" /><link rel="shortcut icon" type="image/x-icon" href="/blog/images/favicon.ico"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Primer/15.2.0/primer.css" integrity="sha512-xTz2ys4coGAOz8vuV1NcQBkgVmKhsSEtjbqyMJbBHRplFuvKIUo6xhLHpAyPt9mfR6twHJgn9OgVLuqOvjeBhg==" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.css" integrity="sha512-h7nl+xz8wgDlNM4NqKEM4F1NkIRS17M9+uJwIGwuo8vGqIl4BhuCKdxjWEINm+xyrUjNCnK5dCrhM0sj+wTIXw==" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/katex.min.js" integrity="sha512-/CMIhXiDA3m2c9kzRyd97MTb3MC6OVnx4TElQ7fkkoRghwDf6gi41gaT1PwF270W6+J60uTmwgeRpNpJdRV6sg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.12.0/contrib/auto-render.min.js" integrity="sha512-Do7uJAaHZm5OLrIv/yN4w0iG1dbu01kzdMNnFfu/mAqgUk6Nniv2JYHcwH+cNwjqgLcqcuBBk+JRvprLVI8azg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha512-0doc9hKxR3PYwso42RD1p5ySZpzzuDiOwMrdCEh2WdJZCjcmFKc/wEnL+z8fBQrnHoiNWbo+3fiGkOYXBdQp4A==" crossorigin="anonymous"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement( document.body, {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "[%", right: "%]", display: true},
+            {left: "$", right: "$", display: false}
+        ]}
+        );
+    });
+    </script>
+
+
+<script>
+function wrap_img(fn) {
+    if (document.attachEvent ? document.readyState === "complete" : document.readyState !== "loading") {
+        var elements = document.querySelectorAll(".post img");
+        Array.prototype.forEach.call(elements, function(el, i) {
+            if (el.getAttribute("title") && (el.className != "emoji")) {
+                const caption = document.createElement('figcaption');
+                var node = document.createTextNode(el.getAttribute("title"));
+                caption.appendChild(node);
+                const wrapper = document.createElement('figure');
+                wrapper.className = 'image';
+                el.parentNode.insertBefore(wrapper, el);
+                el.parentNode.removeChild(el);
+                wrapper.appendChild(el);
+                wrapper.appendChild(caption);
+            }
+        });
+    } else { document.addEventListener('DOMContentLoaded', fn); }
+}
+window.onload = wrap_img;
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+    // add link icon to anchor tags
+    var elem = document.querySelectorAll(".anchor-link")
+    elem.forEach(e => (e.innerHTML = '<i class="fas fa-link fa-xs"></i>'));
+    });
+</script>
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/blog/">Sunhwan Jo</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/blog/about/">About Me</a><a class="page-link" href="/blog/search/">Search</a><a class="page-link" href="/blog/categories/">Tags</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Generating Reaction Library Compounds</h1><p class="page-description">Generating Reaction Library Compounds</p><p class="post-meta post-meta-title"><time class="dt-published" datetime="2021-12-22T00:00:00-06:00" itemprop="datePublished">
+        Dec 22, 2021
+      </time>
+       • <span class="read-time" title="Estimated read time">
+    
+    
+      4 min read
+    
+</span></p>
+
+    
+      <p class="category-tags"><i class="fas fa-tags category-tags-icon"></i></i> 
+      
+        <a class="category-tags-link" href="/blog/categories/#RDKit">RDKit</a>
+        &nbsp;
+      
+        <a class="category-tags-link" href="/blog/categories/#Reaction Library">Reaction Library</a>
+        
+      
+      </p>
+    
+
+    
+      
+        <div class="pb-5 d-flex flex-wrap flex-justify-end">
+          <div class="px-2">
+
+    <a href="https://github.com/sunhwan/blog/tree/master/_notebooks/2021-12-22-Generating-Reaction-Library-Compound.ipynb" role="button" target="_blank">
+<img class="notebook-badge-image" src="/blog/assets/badges/github.svg" alt="View On GitHub">
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://mybinder.org/v2/gh/sunhwan/blog/master?filepath=_notebooks%2F2021-12-22-Generating-Reaction-Library-Compound.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/binder.svg" alt="Open In Binder"/>
+    </a>
+</div>
+
+          <div class="px-2">
+    <a href="https://colab.research.google.com/github/sunhwan/blog/blob/master/_notebooks/2021-12-22-Generating-Reaction-Library-Compound.ipynb" target="_blank">
+        <img class="notebook-badge-image" src="/blog/assets/badges/colab.svg" alt="Open In Colab"/>
+    </a>
+</div>
+        </div>
+      </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul class="section-nav">
+<li class="toc-entry toc-h1"><a href="#Motivation">Motivation </a></li>
+<li class="toc-entry toc-h1"><a href="#Synthons">Synthons </a></li>
+<li class="toc-entry toc-h1"><a href="#Reaction">Reaction </a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#Acylation-of-block-1">Acylation of block 1 </a></li>
+<li class="toc-entry toc-h2"><a href="#Block1-+-Core-=-Product1">Block1 + Core = Product1 </a></li>
+<li class="toc-entry toc-h2"><a href="#Deprotection-of-Product-1">Deprotection of Product 1 </a></li>
+<li class="toc-entry toc-h2"><a href="#Acylation-of-Block-2">Acylation of Block 2 </a></li>
+<li class="toc-entry toc-h2"><a href="#Block-2-+-Product-2-=-Final-Product">Block 2 + Product 2 = Final Product </a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#Library-Generation">Library Generation </a></li>
+<li class="toc-entry toc-h1"><a href="#Conclusion">Conclusion </a></li>
+</ul><!--
+#################################################
+### THIS FILE WAS AUTOGENERATED! DO NOT EDIT! ###
+#################################################
+# file to edit: _notebooks/2021-12-22-Generating-Reaction-Library-Compound.ipynb
+-->
+
+<div class="container" id="notebook-container">
+        
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="kn">import</span> <span class="n">PandasTools</span>
+
+<span class="kn">from</span> <span class="nn">rdkit</span> <span class="kn">import</span> <span class="n">Chem</span>
+<span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="kn">import</span> <span class="n">AllChem</span>
+<span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="kn">import</span> <span class="n">DataStructs</span>
+<span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="kn">import</span> <span class="n">rdMolDescriptors</span>
+<span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="kn">import</span> <span class="n">rdRGroupDecomposition</span>
+
+<span class="kn">from</span> <span class="nn">rdkit.Chem.Draw</span> <span class="kn">import</span> <span class="n">IPythonConsole</span> <span class="c1">#Needed to show molecules</span>
+<span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="kn">import</span> <span class="n">Draw</span>
+<span class="kn">from</span> <span class="nn">rdkit.Chem</span> <span class="kn">import</span> <span class="n">rdDepictor</span>
+<span class="kn">from</span> <span class="nn">rdkit.Chem.Draw</span> <span class="kn">import</span> <span class="n">rdMolDraw2D</span>
+<span class="kn">from</span> <span class="nn">rdkit.Chem.Draw.MolDrawing</span> <span class="kn">import</span> <span class="n">MolDrawing</span><span class="p">,</span> <span class="n">DrawingOptions</span> <span class="c1">#Only needed if modifying defaults</span>
+
+<span class="n">DrawingOptions</span><span class="o">.</span><span class="n">bondLineWidth</span><span class="o">=</span><span class="mf">1.8</span>
+<span class="n">IPythonConsole</span><span class="o">.</span><span class="n">ipython_useSVG</span><span class="o">=</span><span class="kc">True</span>
+<span class="kn">from</span> <span class="nn">rdkit</span> <span class="kn">import</span> <span class="n">RDLogger</span>
+<span class="n">RDLogger</span><span class="o">.</span><span class="n">DisableLog</span><span class="p">(</span><span class="s1">'rdApp.warning'</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">rdkit</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">rdkit</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>2021.09.2
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Motivation">
+<a class="anchor" href="#Motivation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Motivation<a class="anchor-link" href="#Motivation"> </a>
+</h1>
+<p>Modern compound library size is increasing fast thanks to parallel synthesis. Enamine REAL Space now have more than 10 billion compounds available for purchase and other vendors are also offering libraries that are much larger than traditional screening library size.</p>
+<p>The papers (<a href="https://doi.org/10.1016/j.isci.2020.101681">1</a> and <a href="https://pubmed.ncbi.nlm.nih.gov/34912117/">2</a>) from Enamine scientists discusses how they have constructed such library in detail. I got interested in building such library myself and tested if I can use RDKit to attempt such library</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Synthons">
+<a class="anchor" href="#Synthons" aria-hidden="true"><span class="octicon octicon-link"></span></a>Synthons<a class="anchor-link" href="#Synthons"> </a>
+</h1>
+<p>Prepare a three groups; core, block1, and block2. For this particular blocks, they all have carboxyl group. The core has one tertiary amine, which can be reacted first, and N-Boc group, which can be deprotected and reacted in a second step.</p>
+<p>Because the reaction order can be swapped, this three synthons will result in four different arrangement of functional group depending on the order of reaction:</p>
+<ul>
+<li>deacylation of group1, deprotection, deacylation of group1</li>
+<li>deacylation of group1, deprotection, deacylation of group2</li>
+<li>deacylation of group2, deprotection, deacylation of group1</li>
+<li>deacylation of group2, deprotection, deacylation of group2</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Below is a core molecule, which have two tertiary amines and one of the amines is protected by Boc group, and two reactant groups, each having one carboxylate group, which can be acylated and readily reacted with a tertiary amine.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">core_smiles</span> <span class="o">=</span> <span class="s1">'C2CCNCC2C1CN(C(=O)OC(C)(C)(C))CC1'</span>
+<span class="n">core</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="n">core_smiles</span><span class="p">)</span>
+<span class="n">core</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<?xml version='1.0' encoding='iso-8859-1'?>
+<svg version="1.1" baseprofile="full" xmlns="http://www.w3.org/2000/svg" xmlns:rdkit="http://www.rdkit.org/xml" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" width="450px" height="150px" viewbox="0 0 450 150">
+<!-- END OF HEADER -->
+<rect style="opacity:1.0;fill:#FFFFFF;stroke:none" width="450.0" height="150.0" x="0.0" y="0.0"> </rect>
+<path class="bond-0 atom-0 atom-1" d="M 88.9,122.5 L 41.4,111.3" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-18 atom-5 atom-0" d="M 122.4,86.9 L 88.9,122.5" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-1 atom-1 atom-2" d="M 41.4,111.3 L 27.3,64.5" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-2 atom-2 atom-3" d="M 27.3,64.5 L 40.8,50.2" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-2 atom-2 atom-3" d="M 40.8,50.2 L 54.3,35.8" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-3 atom-3 atom-4" d="M 67.2,30.5 L 87.8,35.3" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-3 atom-3 atom-4" d="M 87.8,35.3 L 108.3,40.2" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-4 atom-4 atom-5" d="M 108.3,40.2 L 122.4,86.9" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-5 atom-5 atom-6" d="M 122.4,86.9 L 169.9,98.1" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-6 atom-6 atom-7" d="M 169.9,98.1 L 206.9,66.3" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-17 atom-17 atom-6" d="M 188.8,143.2 L 169.9,98.1" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-7 atom-7 atom-8" d="M 206.9,66.3 L 224.6,77.0" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-7 atom-7 atom-8" d="M 224.6,77.0 L 242.2,87.7" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-8 atom-8 atom-9" d="M 255.2,88.9 L 274.4,80.8" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-8 atom-8 atom-9" d="M 274.4,80.8 L 293.7,72.7" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-15 atom-8 atom-16" d="M 246.8,99.7 L 242.1,119.4" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-15 atom-8 atom-16" d="M 242.1,119.4 L 237.5,139.1" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-9 atom-9 atom-10" d="M 298.6,73.3 L 301.1,53.3" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-9 atom-9 atom-10" d="M 301.1,53.3 L 303.7,33.3" style="fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-9 atom-9 atom-10" d="M 288.9,72.1 L 291.4,52.1" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-9 atom-9 atom-10" d="M 291.4,52.1 L 294.0,32.1" style="fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-10 atom-9 atom-11" d="M 293.7,72.7 L 309.4,84.6" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-10 atom-9 atom-11" d="M 309.4,84.6 L 325.0,96.5" style="fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-11 atom-11 atom-12" d="M 340.2,99.1 L 358.9,91.3" style="fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-11 atom-11 atom-12" d="M 358.9,91.3 L 377.7,83.4" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-12 atom-12 atom-13" d="M 377.7,83.4 L 396.5,128.5" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-13 atom-12 atom-14" d="M 377.7,83.4 L 358.8,38.4" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-14 atom-12 atom-15" d="M 377.7,83.4 L 422.7,64.5" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-16 atom-16 atom-17" d="M 237.5,139.1 L 188.8,143.2" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="atom-3" d="M 57.7 22.0
+L 62.2 29.4
+Q 62.7 30.1, 63.4 31.4
+Q 64.1 32.7, 64.2 32.8
+L 64.2 22.0
+L 66.0 22.0
+L 66.0 35.9
+L 64.1 35.9
+L 59.2 27.9
+Q 58.7 26.9, 58.1 25.8
+Q 57.5 24.8, 57.3 24.4
+L 57.3 35.9
+L 55.5 35.9
+L 55.5 22.0
+L 57.7 22.0
+" fill="#0000FF"></path>
+<path class="atom-3" d="M 55.4 6.8
+L 57.2 6.8
+L 57.2 12.7
+L 64.3 12.7
+L 64.3 6.8
+L 66.2 6.8
+L 66.2 20.7
+L 64.3 20.7
+L 64.3 14.3
+L 57.2 14.3
+L 57.2 20.7
+L 55.4 20.7
+L 55.4 6.8
+" fill="#0000FF"></path>
+<path class="atom-8" d="M 245.6 84.7
+L 250.2 92.0
+Q 250.6 92.7, 251.3 94.0
+Q 252.1 95.4, 252.1 95.4
+L 252.1 84.7
+L 253.9 84.7
+L 253.9 98.5
+L 252.0 98.5
+L 247.2 90.5
+Q 246.6 89.6, 246.0 88.5
+Q 245.4 87.4, 245.2 87.1
+L 245.2 98.5
+L 243.4 98.5
+L 243.4 84.7
+L 245.6 84.7
+" fill="#0000FF"></path>
+<path class="atom-10" d="M 293.6 24.3
+Q 293.6 21.0, 295.2 19.1
+Q 296.8 17.3, 299.9 17.3
+Q 303.0 17.3, 304.6 19.1
+Q 306.3 21.0, 306.3 24.3
+Q 306.3 27.7, 304.6 29.6
+Q 302.9 31.5, 299.9 31.5
+Q 296.9 31.5, 295.2 29.6
+Q 293.6 27.7, 293.6 24.3
+M 299.9 29.9
+Q 302.0 29.9, 303.2 28.5
+Q 304.3 27.1, 304.3 24.3
+Q 304.3 21.6, 303.2 20.2
+Q 302.0 18.8, 299.9 18.8
+Q 297.8 18.8, 296.6 20.2
+Q 295.5 21.6, 295.5 24.3
+Q 295.5 27.1, 296.6 28.5
+Q 297.8 29.9, 299.9 29.9
+" fill="#FF0000"></path>
+<path class="atom-11" d="M 326.3 102.3
+Q 326.3 99.0, 327.9 97.2
+Q 329.5 95.3, 332.6 95.3
+Q 335.7 95.3, 337.3 97.2
+Q 339.0 99.0, 339.0 102.3
+Q 339.0 105.7, 337.3 107.6
+Q 335.6 109.5, 332.6 109.5
+Q 329.6 109.5, 327.9 107.6
+Q 326.3 105.7, 326.3 102.3
+M 332.6 107.9
+Q 334.7 107.9, 335.9 106.5
+Q 337.0 105.1, 337.0 102.3
+Q 337.0 99.6, 335.9 98.2
+Q 334.7 96.9, 332.6 96.9
+Q 330.5 96.9, 329.3 98.2
+Q 328.2 99.6, 328.2 102.3
+Q 328.2 105.1, 329.3 106.5
+Q 330.5 107.9, 332.6 107.9
+" fill="#FF0000"></path>
+</svg>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">group1_smiles</span> <span class="o">=</span> <span class="s1">'c12ccccc1NN=C2(C(=O)O)'</span>
+<span class="n">group1</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="n">group1_smiles</span><span class="p">)</span>
+<span class="n">group1</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<?xml version='1.0' encoding='iso-8859-1'?>
+<svg version="1.1" baseprofile="full" xmlns="http://www.w3.org/2000/svg" xmlns:rdkit="http://www.rdkit.org/xml" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" width="450px" height="150px" viewbox="0 0 450 150">
+<!-- END OF HEADER -->
+<rect style="opacity:1.0;fill:#FFFFFF;stroke:none" width="450.0" height="150.0" x="0.0" y="0.0"> </rect>
+<path class="bond-0 atom-0 atom-1" d="M 245.9,88.5 L 261.2,124.8" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-0 atom-0 atom-1" d="M 255.4,90.9 L 266.1,116.3" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-11 atom-5 atom-0" d="M 269.7,57.1 L 245.9,88.5" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-12 atom-8 atom-0" d="M 208.6,75.5 L 245.9,88.5" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-1 atom-1 atom-2" d="M 261.2,124.8 L 300.3,129.8" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-2 atom-2 atom-3" d="M 300.3,129.8 L 324.1,98.3" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-2 atom-2 atom-3" d="M 297.6,120.3 L 314.3,98.3" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-3 atom-3 atom-4" d="M 324.1,98.3 L 308.8,62.0" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-4 atom-4 atom-5" d="M 308.8,62.0 L 269.7,57.1" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-4 atom-4 atom-5" d="M 302.0,69.1 L 274.6,65.6" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-5 atom-5 atom-6" d="M 269.7,57.1 L 260.7,44.2" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-5 atom-5 atom-6" d="M 260.7,44.2 L 251.7,31.3" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-6 atom-6 atom-7" d="M 241.9,26.3 L 214.5,34.6" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-7 atom-7 atom-8" d="M 209.3,42.7 L 208.9,59.1" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-7 atom-7 atom-8" d="M 208.9,59.1 L 208.6,75.5" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-7 atom-7 atom-8" d="M 217.1,47.8 L 216.8,59.3" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-7 atom-7 atom-8" d="M 216.8,59.3 L 216.6,70.8" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-8 atom-8 atom-9" d="M 208.6,75.5 L 176.2,98.1" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-9 atom-9 atom-10" d="M 172.3,98.4 L 173.7,114.7" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-9 atom-9 atom-10" d="M 173.7,114.7 L 175.1,131.1" style="fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-9 atom-9 atom-10" d="M 180.2,97.7 L 181.5,114.1" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-9 atom-9 atom-10" d="M 181.5,114.1 L 182.9,130.4" style="fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-10 atom-9 atom-11" d="M 176.2,98.1 L 161.4,91.1" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-10 atom-9 atom-11" d="M 161.4,91.1 L 146.6,84.2" style="fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="atom-6" d="M 244.7 19.1
+L 248.4 25.0
+Q 248.7 25.6, 249.3 26.7
+Q 249.9 27.7, 249.9 27.8
+L 249.9 19.1
+L 251.4 19.1
+L 251.4 30.3
+L 249.9 30.3
+L 245.9 23.8
+Q 245.5 23.0, 245.0 22.2
+Q 244.5 21.3, 244.4 21.0
+L 244.4 30.3
+L 242.9 30.3
+L 242.9 19.1
+L 244.7 19.1
+" fill="#0000FF"></path>
+<path class="atom-6" d="M 242.8 6.8
+L 244.3 6.8
+L 244.3 11.6
+L 250.0 11.6
+L 250.0 6.8
+L 251.5 6.8
+L 251.5 18.0
+L 250.0 18.0
+L 250.0 12.8
+L 244.3 12.8
+L 244.3 18.0
+L 242.8 18.0
+L 242.8 6.8
+" fill="#0000FF"></path>
+<path class="atom-7" d="M 206.9 30.5
+L 210.6 36.4
+Q 211.0 37.0, 211.6 38.1
+Q 212.1 39.1, 212.2 39.2
+L 212.2 30.5
+L 213.7 30.5
+L 213.7 41.7
+L 212.1 41.7
+L 208.2 35.2
+Q 207.7 34.5, 207.2 33.6
+Q 206.8 32.7, 206.6 32.5
+L 206.6 41.7
+L 205.2 41.7
+L 205.2 30.5
+L 206.9 30.5
+" fill="#0000FF"></path>
+<path class="atom-10" d="M 174.4 137.4
+Q 174.4 134.7, 175.7 133.2
+Q 177.1 131.7, 179.5 131.7
+Q 182.0 131.7, 183.3 133.2
+Q 184.7 134.7, 184.7 137.4
+Q 184.7 140.1, 183.3 141.7
+Q 182.0 143.2, 179.5 143.2
+Q 177.1 143.2, 175.7 141.7
+Q 174.4 140.1, 174.4 137.4
+M 179.5 141.9
+Q 181.2 141.9, 182.2 140.8
+Q 183.1 139.6, 183.1 137.4
+Q 183.1 135.2, 182.2 134.1
+Q 181.2 133.0, 179.5 133.0
+Q 177.8 133.0, 176.9 134.1
+Q 176.0 135.2, 176.0 137.4
+Q 176.0 139.6, 176.9 140.8
+Q 177.8 141.9, 179.5 141.9
+" fill="#FF0000"></path>
+<path class="atom-11" d="M 125.9 75.8
+L 127.4 75.8
+L 127.4 80.5
+L 133.1 80.5
+L 133.1 75.8
+L 134.6 75.8
+L 134.6 86.9
+L 133.1 86.9
+L 133.1 81.8
+L 127.4 81.8
+L 127.4 86.9
+L 125.9 86.9
+L 125.9 75.8
+" fill="#FF0000"></path>
+<path class="atom-11" d="M 135.4 81.3
+Q 135.4 78.6, 136.7 77.1
+Q 138.1 75.6, 140.5 75.6
+Q 143.0 75.6, 144.3 77.1
+Q 145.7 78.6, 145.7 81.3
+Q 145.7 84.0, 144.3 85.6
+Q 143.0 87.1, 140.5 87.1
+Q 138.1 87.1, 136.7 85.6
+Q 135.4 84.0, 135.4 81.3
+M 140.5 85.8
+Q 142.2 85.8, 143.2 84.7
+Q 144.1 83.6, 144.1 81.3
+Q 144.1 79.1, 143.2 78.0
+Q 142.2 76.9, 140.5 76.9
+Q 138.8 76.9, 137.9 78.0
+Q 137.0 79.1, 137.0 81.3
+Q 137.0 83.6, 137.9 84.7
+Q 138.8 85.8, 140.5 85.8
+" fill="#FF0000"></path>
+</svg>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">group2_smiles</span> <span class="o">=</span> <span class="s1">'C1CCCCC1C(=O)O'</span>
+<span class="n">group2</span> <span class="o">=</span> <span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="n">group2_smiles</span><span class="p">)</span>
+<span class="n">group2</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<?xml version='1.0' encoding='iso-8859-1'?>
+<svg version="1.1" baseprofile="full" xmlns="http://www.w3.org/2000/svg" xmlns:rdkit="http://www.rdkit.org/xml" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" width="450px" height="150px" viewbox="0 0 450 150">
+<!-- END OF HEADER -->
+<rect style="opacity:1.0;fill:#FFFFFF;stroke:none" width="450.0" height="150.0" x="0.0" y="0.0"> </rect>
+<path class="bond-0 atom-0 atom-1" d="M 195.2,133.2 L 127.7,133.2" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-8 atom-5 atom-0" d="M 228.9,74.9 L 195.2,133.2" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-1 atom-1 atom-2" d="M 127.7,133.2 L 94.0,74.9" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-2 atom-2 atom-3" d="M 94.0,74.9 L 127.7,16.5" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-3 atom-3 atom-4" d="M 127.7,16.5 L 195.2,16.5" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-4 atom-4 atom-5" d="M 195.2,16.5 L 228.9,74.9" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-5 atom-5 atom-6" d="M 228.9,74.9 L 296.3,74.9" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-6 atom-6 atom-7" d="M 302.1,78.2 L 315.6,54.8" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-6 atom-6 atom-7" d="M 315.6,54.8 L 329.1,31.5" style="fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-6 atom-6 atom-7" d="M 290.4,71.5 L 303.9,48.1" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-6 atom-6 atom-7" d="M 303.9,48.1 L 317.4,24.7" style="fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-7 atom-6 atom-8" d="M 296.3,74.9 L 309.8,98.4" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-7 atom-6 atom-8" d="M 309.8,98.4 L 323.4,121.9" style="fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="atom-7" d="M 321.2 16.5
+Q 321.2 11.9, 323.5 9.4
+Q 325.7 6.8, 330.0 6.8
+Q 334.2 6.8, 336.5 9.4
+Q 338.7 11.9, 338.7 16.5
+Q 338.7 21.2, 336.4 23.8
+Q 334.2 26.4, 330.0 26.4
+Q 325.8 26.4, 323.5 23.8
+Q 321.2 21.2, 321.2 16.5
+M 330.0 24.3
+Q 332.9 24.3, 334.4 22.3
+Q 336.0 20.4, 336.0 16.5
+Q 336.0 12.8, 334.4 10.9
+Q 332.9 9.0, 330.0 9.0
+Q 327.1 9.0, 325.5 10.9
+Q 323.9 12.8, 323.9 16.5
+Q 323.9 20.4, 325.5 22.3
+Q 327.1 24.3, 330.0 24.3
+" fill="#FF0000"></path>
+<path class="atom-8" d="M 321.2 133.3
+Q 321.2 128.7, 323.5 126.1
+Q 325.7 123.6, 330.0 123.6
+Q 334.2 123.6, 336.5 126.1
+Q 338.7 128.7, 338.7 133.3
+Q 338.7 137.9, 336.4 140.6
+Q 334.2 143.2, 330.0 143.2
+Q 325.8 143.2, 323.5 140.6
+Q 321.2 138.0, 321.2 133.3
+M 330.0 141.0
+Q 332.9 141.0, 334.4 139.1
+Q 336.0 137.1, 336.0 133.3
+Q 336.0 129.5, 334.4 127.7
+Q 332.9 125.7, 330.0 125.7
+Q 327.1 125.7, 325.5 127.6
+Q 323.9 129.5, 323.9 133.3
+Q 323.9 137.1, 325.5 139.1
+Q 327.1 141.0, 330.0 141.0
+" fill="#FF0000"></path>
+<path class="atom-8" d="M 341.0 123.8
+L 343.6 123.8
+L 343.6 131.9
+L 353.4 131.9
+L 353.4 123.8
+L 356.0 123.8
+L 356.0 142.9
+L 353.4 142.9
+L 353.4 134.1
+L 343.6 134.1
+L 343.6 142.9
+L 341.0 142.9
+L 341.0 123.8
+" fill="#FF0000"></path>
+</svg>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Reaction">
+<a class="anchor" href="#Reaction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Reaction<a class="anchor-link" href="#Reaction"> </a>
+</h1>
+<p>Three main reaction are used here: acylation, amide formation, and deprotection. These reactions can be represented as below SMARTS strings. And I'll walk through different how we carry out reactions to generate new compound.</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">rxn_acylation_smarts</span> <span class="o">=</span> <span class="s1">'[C;D3:1](=O)[O;D1:2]&gt;&gt;[C:1](=O)[*]'</span>
+<span class="n">rxn_acylamine_smarts</span> <span class="o">=</span> <span class="s1">'[*:1][C:2](=O)[*;D1:3].[ND2:4]([*:5])([*:6])&gt;&gt;[N:4]([*:5])([*:6])([C:2](=O)[*:1])'</span>
+<span class="n">rxn_deprotection_smarts</span> <span class="o">=</span> <span class="s1">'[N:1]C(=O)OC(C)(C)(C)&gt;&gt;[N:1]'</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Acylation-of-block-1">
+<a class="anchor" href="#Acylation-of-block-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Acylation of block 1<a class="anchor-link" href="#Acylation-of-block-1"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">rxn</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">ReactionFromSmarts</span><span class="p">(</span><span class="n">rxn_acylation_smarts</span><span class="p">)</span>
+<span class="n">group1_product</span> <span class="o">=</span> <span class="n">rxn</span><span class="o">.</span><span class="n">RunReactants</span><span class="p">((</span><span class="n">group1</span><span class="p">,))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">group1_product</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<?xml version='1.0' encoding='iso-8859-1'?>
+<svg version="1.1" baseprofile="full" xmlns="http://www.w3.org/2000/svg" xmlns:rdkit="http://www.rdkit.org/xml" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" width="450px" height="150px" viewbox="0 0 450 150">
+<!-- END OF HEADER -->
+<rect style="opacity:1.0;fill:#FFFFFF;stroke:none" width="450.0" height="150.0" x="0.0" y="0.0"> </rect>
+<path class="bond-0 atom-0 atom-1" d="M 166.3,98.4 L 167.7,114.7" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-0 atom-0 atom-1" d="M 167.7,114.7 L 169.0,131.1" style="fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-0 atom-0 atom-1" d="M 174.2,97.7 L 175.5,114.1" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-0 atom-0 atom-1" d="M 175.5,114.1 L 176.9,130.4" style="fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-1 atom-0 atom-2" d="M 170.2,98.1 L 152.8,89.9" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-1 atom-0 atom-2" d="M 152.8,89.9 L 135.4,81.7" style="fill:none;fill-rule:evenodd;stroke:#191919;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-2 atom-3 atom-0" d="M 202.6,75.5 L 170.2,98.1" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-3 atom-4 atom-3" d="M 203.3,42.7 L 202.9,59.1" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-3 atom-4 atom-3" d="M 202.9,59.1 L 202.6,75.5" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-3 atom-4 atom-3" d="M 211.1,47.8 L 210.8,59.3" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-3 atom-4 atom-3" d="M 210.8,59.3 L 210.6,70.8" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-4 atom-3 atom-5" d="M 202.6,75.5 L 239.9,88.5" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-5 atom-6 atom-4" d="M 235.9,26.3 L 208.5,34.6" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-6 atom-5 atom-7" d="M 239.9,88.5 L 255.2,124.8" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-6 atom-5 atom-7" d="M 249.4,90.9 L 260.1,116.3" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-7 atom-8 atom-5" d="M 263.7,57.1 L 239.9,88.5" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-8 atom-8 atom-6" d="M 263.7,57.1 L 254.7,44.2" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-8 atom-8 atom-6" d="M 254.7,44.2 L 245.7,31.3" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-9 atom-7 atom-9" d="M 255.2,124.8 L 294.3,129.8" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-10 atom-10 atom-8" d="M 302.8,62.0 L 263.7,57.1" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-10 atom-10 atom-8" d="M 296.0,69.1 L 268.6,65.6" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-11 atom-9 atom-11" d="M 294.3,129.8 L 318.1,98.3" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-11 atom-9 atom-11" d="M 291.6,120.3 L 308.3,98.3" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-12 atom-11 atom-10" d="M 318.1,98.3 L 302.8,62.0" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="atom-1" d="M 168.4 137.4
+Q 168.4 134.7, 169.7 133.2
+Q 171.1 131.7, 173.5 131.7
+Q 176.0 131.7, 177.3 133.2
+Q 178.7 134.7, 178.7 137.4
+Q 178.7 140.1, 177.3 141.7
+Q 176.0 143.2, 173.5 143.2
+Q 171.1 143.2, 169.7 141.7
+Q 168.4 140.1, 168.4 137.4
+M 173.5 141.9
+Q 175.2 141.9, 176.2 140.8
+Q 177.1 139.6, 177.1 137.4
+Q 177.1 135.2, 176.2 134.1
+Q 175.2 133.0, 173.5 133.0
+Q 171.8 133.0, 170.9 134.1
+Q 170.0 135.2, 170.0 137.4
+Q 170.0 139.6, 170.9 140.8
+Q 171.8 141.9, 173.5 141.9
+" fill="#FF0000"></path>
+<path class="atom-2" d="M 132.4 80.0
+L 134.1 78.4
+L 131.9 77.9
+L 132.2 76.8
+L 134.2 77.8
+L 133.9 75.6
+L 135.1 75.6
+L 134.8 77.8
+L 136.8 76.8
+L 137.2 77.9
+L 135.0 78.3
+L 136.5 80.0
+L 135.6 80.7
+L 134.5 78.6
+L 133.4 80.7
+L 132.4 80.0
+" fill="#191919"></path>
+<path class="atom-4" d="M 200.9 30.5
+L 204.6 36.4
+Q 205.0 37.0, 205.5 38.1
+Q 206.1 39.1, 206.2 39.2
+L 206.2 30.5
+L 207.6 30.5
+L 207.6 41.7
+L 206.1 41.7
+L 202.2 35.2
+Q 201.7 34.5, 201.2 33.6
+Q 200.8 32.7, 200.6 32.5
+L 200.6 41.7
+L 199.2 41.7
+L 199.2 30.5
+L 200.9 30.5
+" fill="#0000FF"></path>
+<path class="atom-6" d="M 238.7 19.1
+L 242.4 25.0
+Q 242.7 25.6, 243.3 26.7
+Q 243.9 27.7, 243.9 27.8
+L 243.9 19.1
+L 245.4 19.1
+L 245.4 30.3
+L 243.9 30.3
+L 239.9 23.8
+Q 239.5 23.0, 239.0 22.2
+Q 238.5 21.3, 238.4 21.0
+L 238.4 30.3
+L 236.9 30.3
+L 236.9 19.1
+L 238.7 19.1
+" fill="#0000FF"></path>
+<path class="atom-6" d="M 236.8 6.8
+L 238.3 6.8
+L 238.3 11.6
+L 244.0 11.6
+L 244.0 6.8
+L 245.5 6.8
+L 245.5 18.0
+L 244.0 18.0
+L 244.0 12.8
+L 238.3 12.8
+L 238.3 18.0
+L 236.8 18.0
+L 236.8 6.8
+" fill="#0000FF"></path>
+</svg>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Block1-+-Core-=-Product1">
+<a class="anchor" href="#Block1-+-Core-=-Product1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Block1 + Core = Product1<a class="anchor-link" href="#Block1-+-Core-=-Product1"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">rxn</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">ReactionFromSmarts</span><span class="p">(</span><span class="n">rxn_acylamine_smarts</span><span class="p">)</span>
+<span class="n">product1</span> <span class="o">=</span> <span class="n">rxn</span><span class="o">.</span><span class="n">RunReactants</span><span class="p">((</span><span class="n">group1_product</span><span class="p">,</span><span class="n">core</span><span class="p">))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">product1</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<?xml version='1.0' encoding='iso-8859-1'?>
+<svg version="1.1" baseprofile="full" xmlns="http://www.w3.org/2000/svg" xmlns:rdkit="http://www.rdkit.org/xml" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" width="450px" height="150px" viewbox="0 0 450 150">
+<!-- END OF HEADER -->
+<rect style="opacity:1.0;fill:#FFFFFF;stroke:none" width="450.0" height="150.0" x="0.0" y="0.0"> </rect>
+<path class="bond-0 atom-1 atom-0" d="M 281.0,29.9 L 276.9,41.7" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-0 atom-1 atom-0" d="M 276.9,41.7 L 272.7,53.4" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-1 atom-2 atom-0" d="M 241.0,64.0 L 254.0,61.6" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-1 atom-2 atom-0" d="M 254.0,61.6 L 266.9,59.2" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-4 atom-3 atom-0" d="M 290.6,81.6 L 282.7,72.4" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-4 atom-3 atom-0" d="M 282.7,72.4 L 274.9,63.2" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-15 atom-14 atom-1" d="M 261.4,6.8 L 281.0,29.9" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-18 atom-2 atom-16" d="M 241.0,64.0 L 221.4,40.9" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-2 atom-3 atom-4" d="M 287.7,80.6 L 283.5,92.3" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-2 atom-3 atom-4" d="M 283.5,92.3 L 279.4,104.0" style="fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-2 atom-3 atom-4" d="M 293.4,82.6 L 289.3,94.3" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-2 atom-3 atom-4" d="M 289.3,94.3 L 285.1,106.1" style="fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-3 atom-3 atom-5" d="M 290.6,81.6 L 320.4,76.1" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-5 atom-6 atom-5" d="M 331.1,53.8 L 325.7,64.9" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-5 atom-6 atom-5" d="M 325.7,64.9 L 320.4,76.1" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-5 atom-6 atom-5" d="M 334.9,59.7 L 331.2,67.5" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-5 atom-6 atom-5" d="M 331.2,67.5 L 327.5,75.3" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-6 atom-5 atom-7" d="M 320.4,76.1 L 342.4,97.0" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-7 atom-8 atom-6" d="M 359.5,52.2 L 337.4,49.2" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-8 atom-7 atom-9" d="M 342.4,97.0 L 341.6,127.3" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-8 atom-7 atom-9" d="M 348.3,101.7 L 347.7,122.9" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-9 atom-10 atom-7" d="M 369.1,82.5 L 342.4,97.0" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-10 atom-10 atom-8" d="M 369.1,82.5 L 366.8,70.1" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-10 atom-10 atom-8" d="M 366.8,70.1 L 364.5,57.8" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-11 atom-9 atom-11" d="M 341.6,127.3 L 367.4,143.2" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-12 atom-12 atom-10" d="M 394.9,98.4 L 369.1,82.5" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-12 atom-12 atom-10" d="M 387.9,101.2 L 369.8,90.1" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-13 atom-11 atom-13" d="M 367.4,143.2 L 394.1,128.7" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-13 atom-11 atom-13" d="M 368.5,135.7 L 387.2,125.6" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-14 atom-13 atom-12" d="M 394.1,128.7 L 394.9,98.4" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-16 atom-15 atom-14" d="M 231.5,12.3 L 261.4,6.8" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-17 atom-16 atom-15" d="M 221.4,40.9 L 231.5,12.3" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-19 atom-16 atom-17" d="M 221.4,40.9 L 191.5,46.4" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-20 atom-17 atom-18" d="M 191.5,46.4 L 178.4,73.8" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-21 atom-19 atom-17" d="M 169.5,25.5 L 191.5,46.4" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-22 atom-18 atom-20" d="M 178.4,73.8 L 165.4,72.0" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-22 atom-18 atom-20" d="M 165.4,72.0 L 152.4,70.3" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-23 atom-21 atom-19" d="M 142.9,40.0 L 169.5,25.5" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-24 atom-20 atom-22" d="M 144.4,74.0 L 135.9,82.9" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-24 atom-20 atom-22" d="M 135.9,82.9 L 127.5,91.8" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-25 atom-20 atom-21" d="M 147.4,64.7 L 145.2,52.3" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-25 atom-20 atom-21" d="M 145.2,52.3 L 142.9,40.0" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-26 atom-22 atom-23" d="M 124.6,92.6 L 128.1,104.6" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-26 atom-22 atom-23" d="M 128.1,104.6 L 131.6,116.6" style="fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-26 atom-22 atom-23" d="M 130.4,90.9 L 133.9,102.9" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-26 atom-22 atom-23" d="M 133.9,102.9 L 137.5,114.9" style="fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-27 atom-22 atom-24" d="M 127.5,91.8 L 115.1,88.8" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-27 atom-22 atom-24" d="M 115.1,88.8 L 102.7,85.8" style="fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-28 atom-24 atom-25" d="M 93.3,89.6 L 85.2,98.1" style="fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-28 atom-24 atom-25" d="M 85.2,98.1 L 77.1,106.6" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-29 atom-25 atom-26" d="M 77.1,106.6 L 55.1,85.7" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-30 atom-25 atom-27" d="M 77.1,106.6 L 99.1,127.6" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-31 atom-25 atom-28" d="M 77.1,106.6 L 56.2,128.6" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="atom-0" d="M 269.0 54.2
+L 271.8 58.7
+Q 272.1 59.2, 272.5 60.0
+Q 273.0 60.8, 273.0 60.9
+L 273.0 54.2
+L 274.1 54.2
+L 274.1 62.8
+L 273.0 62.8
+L 269.9 57.8
+Q 269.6 57.2, 269.2 56.6
+Q 268.9 55.9, 268.7 55.7
+L 268.7 62.8
+L 267.6 62.8
+L 267.6 54.2
+L 269.0 54.2
+" fill="#0000FF"></path>
+<path class="atom-4" d="M 276.5 110.2
+Q 276.5 108.1, 277.5 107.0
+Q 278.5 105.8, 280.4 105.8
+Q 282.3 105.8, 283.3 107.0
+Q 284.4 108.1, 284.4 110.2
+Q 284.4 112.3, 283.3 113.5
+Q 282.3 114.6, 280.4 114.6
+Q 278.5 114.6, 277.5 113.5
+Q 276.5 112.3, 276.5 110.2
+M 280.4 113.7
+Q 281.7 113.7, 282.4 112.8
+Q 283.1 111.9, 283.1 110.2
+Q 283.1 108.5, 282.4 107.7
+Q 281.7 106.8, 280.4 106.8
+Q 279.1 106.8, 278.4 107.6
+Q 277.7 108.5, 277.7 110.2
+Q 277.7 111.9, 278.4 112.8
+Q 279.1 113.7, 280.4 113.7
+" fill="#FF0000"></path>
+<path class="atom-6" d="M 331.6 44.4
+L 334.4 49.0
+Q 334.7 49.4, 335.1 50.2
+Q 335.6 51.0, 335.6 51.1
+L 335.6 44.4
+L 336.7 44.4
+L 336.7 53.0
+L 335.6 53.0
+L 332.5 48.0
+Q 332.2 47.4, 331.8 46.8
+Q 331.5 46.1, 331.3 45.9
+L 331.3 53.0
+L 330.2 53.0
+L 330.2 44.4
+L 331.6 44.4
+" fill="#0000FF"></path>
+<path class="atom-8" d="M 361.7 48.4
+L 364.5 53.0
+Q 364.8 53.4, 365.2 54.2
+Q 365.6 55.0, 365.7 55.1
+L 365.7 48.4
+L 366.8 48.4
+L 366.8 57.0
+L 365.6 57.0
+L 362.6 52.0
+Q 362.3 51.4, 361.9 50.8
+Q 361.5 50.1, 361.4 49.9
+L 361.4 57.0
+L 360.3 57.0
+L 360.3 48.4
+L 361.7 48.4
+" fill="#0000FF"></path>
+<path class="atom-8" d="M 367.8 48.4
+L 369.0 48.4
+L 369.0 52.1
+L 373.4 52.1
+L 373.4 48.4
+L 374.6 48.4
+L 374.6 57.0
+L 373.4 57.0
+L 373.4 53.0
+L 369.0 53.0
+L 369.0 57.0
+L 367.8 57.0
+L 367.8 48.4
+" fill="#0000FF"></path>
+<path class="atom-20" d="M 146.5 65.5
+L 149.3 70.0
+Q 149.6 70.5, 150.0 71.3
+Q 150.5 72.1, 150.5 72.2
+L 150.5 65.5
+L 151.6 65.5
+L 151.6 74.1
+L 150.5 74.1
+L 147.4 69.1
+Q 147.1 68.5, 146.7 67.9
+Q 146.3 67.2, 146.2 67.0
+L 146.2 74.1
+L 145.1 74.1
+L 145.1 65.5
+L 146.5 65.5
+" fill="#0000FF"></path>
+<path class="atom-23" d="M 132.1 120.9
+Q 132.1 118.8, 133.1 117.7
+Q 134.2 116.5, 136.1 116.5
+Q 138.0 116.5, 139.0 117.7
+Q 140.0 118.8, 140.0 120.9
+Q 140.0 123.0, 139.0 124.2
+Q 137.9 125.3, 136.1 125.3
+Q 134.2 125.3, 133.1 124.2
+Q 132.1 123.0, 132.1 120.9
+M 136.1 124.4
+Q 137.4 124.4, 138.1 123.5
+Q 138.8 122.6, 138.8 120.9
+Q 138.8 119.2, 138.1 118.4
+Q 137.4 117.5, 136.1 117.5
+Q 134.8 117.5, 134.0 118.3
+Q 133.3 119.2, 133.3 120.9
+Q 133.3 122.6, 134.0 123.5
+Q 134.8 124.4, 136.1 124.4
+" fill="#FF0000"></path>
+<path class="atom-24" d="M 94.0 84.7
+Q 94.0 82.6, 95.1 81.5
+Q 96.1 80.3, 98.0 80.3
+Q 99.9 80.3, 100.9 81.5
+Q 101.9 82.6, 101.9 84.7
+Q 101.9 86.8, 100.9 88.0
+Q 99.9 89.1, 98.0 89.1
+Q 96.1 89.1, 95.1 88.0
+Q 94.0 86.8, 94.0 84.7
+M 98.0 88.2
+Q 99.3 88.2, 100.0 87.3
+Q 100.7 86.4, 100.7 84.7
+Q 100.7 83.0, 100.0 82.2
+Q 99.3 81.3, 98.0 81.3
+Q 96.7 81.3, 96.0 82.1
+Q 95.3 83.0, 95.3 84.7
+Q 95.3 86.4, 96.0 87.3
+Q 96.7 88.2, 98.0 88.2
+" fill="#FF0000"></path>
+</svg>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Deprotection-of-Product-1">
+<a class="anchor" href="#Deprotection-of-Product-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Deprotection of Product 1<a class="anchor-link" href="#Deprotection-of-Product-1"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">rxn</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">ReactionFromSmarts</span><span class="p">(</span><span class="n">rxn_deprotection_smarts</span><span class="p">)</span>
+<span class="n">product2</span> <span class="o">=</span> <span class="n">rxn</span><span class="o">.</span><span class="n">RunReactants</span><span class="p">((</span><span class="n">product1</span><span class="p">,))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">product2</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<?xml version='1.0' encoding='iso-8859-1'?>
+<svg version="1.1" baseprofile="full" xmlns="http://www.w3.org/2000/svg" xmlns:rdkit="http://www.rdkit.org/xml" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" width="450px" height="150px" viewbox="0 0 450 150">
+<!-- END OF HEADER -->
+<rect style="opacity:1.0;fill:#FFFFFF;stroke:none" width="450.0" height="150.0" x="0.0" y="0.0"> </rect>
+<path class="bond-0 atom-1 atom-0" d="M 112.9,57.7 L 108.9,44.5" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-0 atom-1 atom-0" d="M 108.9,44.5 L 104.9,31.4" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-1 atom-0 atom-2" d="M 107.7,22.8 L 119.1,14.8" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-1 atom-0 atom-2" d="M 119.1,14.8 L 130.6,6.8" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-2 atom-3 atom-1" d="M 146.2,58.4 L 112.9,57.7" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-3 atom-2 atom-4" d="M 130.6,6.8 L 157.1,26.9" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-4 atom-5 atom-3" d="M 165.2,85.7 L 146.2,58.4" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-5 atom-4 atom-3" d="M 157.1,26.9 L 146.2,58.4" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-6 atom-5 atom-6" d="M 165.2,85.7 L 151.0,115.8" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-7 atom-7 atom-5" d="M 198.4,82.9 L 165.2,85.7" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-8 atom-6 atom-8" d="M 151.0,115.8 L 170.0,143.2" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-9 atom-7 atom-9" d="M 198.4,82.9 L 205.9,93.8" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-9 atom-7 atom-9" d="M 205.9,93.8 L 213.5,104.7" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-10 atom-8 atom-10" d="M 170.0,143.2 L 203.2,140.4" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-11 atom-10 atom-9" d="M 203.2,140.4 L 209.0,128.1" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-11 atom-10 atom-9" d="M 209.0,128.1 L 214.8,115.8" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-12 atom-11 atom-9" d="M 250.5,107.5 L 236.2,108.7" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-12 atom-11 atom-9" d="M 236.2,108.7 L 221.8,109.9" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-13 atom-11 atom-12" d="M 247.8,109.4 L 255.4,120.2" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-13 atom-11 atom-12" d="M 255.4,120.2 L 262.9,131.1" style="fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-13 atom-11 atom-12" d="M 253.3,105.6 L 260.8,116.4" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-13 atom-11 atom-12" d="M 260.8,116.4 L 268.4,127.3" style="fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-14 atom-11 atom-13" d="M 250.5,107.5 L 264.7,77.4" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-15 atom-14 atom-13" d="M 251.7,53.7 L 258.2,65.5" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-15 atom-14 atom-13" d="M 258.2,65.5 L 264.7,77.4" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-15 atom-14 atom-13" d="M 259.5,54.1 L 264.0,62.3" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-15 atom-14 atom-13" d="M 264.0,62.3 L 268.6,70.6" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-16 atom-13 atom-15" d="M 264.7,77.4 L 297.4,71.1" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-17 atom-16 atom-14" d="M 267.0,28.6 L 252.9,43.7" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-18 atom-15 atom-17" d="M 297.4,71.1 L 323.9,91.2" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-18 atom-15 atom-17" d="M 305.4,68.8 L 324.0,82.9" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-19 atom-18 atom-15" d="M 301.6,38.1 L 297.4,71.1" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-20 atom-18 atom-16" d="M 301.6,38.1 L 288.7,32.0" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-20 atom-18 atom-16" d="M 288.7,32.0 L 275.9,26.0" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-21 atom-17 atom-19" d="M 323.9,91.2 L 354.6,78.3" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-22 atom-20 atom-18" d="M 332.3,25.2 L 301.6,38.1" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-22 atom-20 atom-18" d="M 330.2,33.2 L 308.8,42.3" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-23 atom-19 atom-21" d="M 354.6,78.3 L 358.8,45.3" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-23 atom-19 atom-21" d="M 348.6,72.5 L 351.6,49.4" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-24 atom-21 atom-20" d="M 358.8,45.3 L 332.3,25.2" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="atom-0" d="M 91.2 21.1
+L 92.5 21.1
+L 92.5 25.1
+L 97.3 25.1
+L 97.3 21.1
+L 98.6 21.1
+L 98.6 30.5
+L 97.3 30.5
+L 97.3 26.2
+L 92.5 26.2
+L 92.5 30.5
+L 91.2 30.5
+L 91.2 21.1
+" fill="#0000FF"></path>
+<path class="atom-0" d="M 101.2 21.1
+L 104.3 26.1
+Q 104.6 26.6, 105.1 27.5
+Q 105.6 28.4, 105.6 28.4
+L 105.6 21.1
+L 106.8 21.1
+L 106.8 30.5
+L 105.6 30.5
+L 102.2 25.1
+Q 101.9 24.4, 101.4 23.7
+Q 101.0 23.0, 100.9 22.7
+L 100.9 30.5
+L 99.7 30.5
+L 99.7 21.1
+L 101.2 21.1
+" fill="#0000FF"></path>
+<path class="atom-9" d="M 215.3 105.6
+L 218.4 110.5
+Q 218.7 111.0, 219.2 111.9
+Q 219.7 112.8, 219.7 112.9
+L 219.7 105.6
+L 220.9 105.6
+L 220.9 115.0
+L 219.6 115.0
+L 216.3 109.5
+Q 215.9 108.9, 215.5 108.1
+Q 215.1 107.4, 215.0 107.2
+L 215.0 115.0
+L 213.8 115.0
+L 213.8 105.6
+L 215.3 105.6
+" fill="#0000FF"></path>
+<path class="atom-12" d="M 265.2 134.8
+Q 265.2 132.6, 266.3 131.3
+Q 267.5 130.0, 269.5 130.0
+Q 271.6 130.0, 272.8 131.3
+Q 273.9 132.6, 273.9 134.8
+Q 273.9 137.1, 272.7 138.4
+Q 271.6 139.7, 269.5 139.7
+Q 267.5 139.7, 266.3 138.4
+Q 265.2 137.1, 265.2 134.8
+M 269.5 138.7
+Q 271.0 138.7, 271.8 137.7
+Q 272.5 136.7, 272.5 134.8
+Q 272.5 133.0, 271.8 132.1
+Q 271.0 131.1, 269.5 131.1
+Q 268.1 131.1, 267.3 132.0
+Q 266.5 133.0, 266.5 134.8
+Q 266.5 136.7, 267.3 137.7
+Q 268.1 138.7, 269.5 138.7
+" fill="#FF0000"></path>
+<path class="atom-14" d="M 246.6 43.5
+L 249.7 48.5
+Q 250.0 49.0, 250.5 49.8
+Q 251.0 50.7, 251.0 50.8
+L 251.0 43.5
+L 252.2 43.5
+L 252.2 52.9
+L 251.0 52.9
+L 247.6 47.4
+Q 247.2 46.8, 246.8 46.1
+Q 246.4 45.3, 246.3 45.1
+L 246.3 52.9
+L 245.1 52.9
+L 245.1 43.5
+L 246.6 43.5
+" fill="#0000FF"></path>
+<path class="atom-16" d="M 269.4 19.2
+L 272.5 24.2
+Q 272.8 24.7, 273.3 25.6
+Q 273.8 26.5, 273.8 26.5
+L 273.8 19.2
+L 275.0 19.2
+L 275.0 28.6
+L 273.7 28.6
+L 270.4 23.2
+Q 270.0 22.5, 269.6 21.8
+Q 269.2 21.1, 269.1 20.8
+L 269.1 28.6
+L 267.9 28.6
+L 267.9 19.2
+L 269.4 19.2
+" fill="#0000FF"></path>
+<path class="atom-16" d="M 267.8 8.8
+L 269.0 8.8
+L 269.0 12.8
+L 273.9 12.8
+L 273.9 8.8
+L 275.1 8.8
+L 275.1 18.2
+L 273.9 18.2
+L 273.9 13.9
+L 269.0 13.9
+L 269.0 18.2
+L 267.8 18.2
+L 267.8 8.8
+" fill="#0000FF"></path>
+</svg>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Acylation-of-Block-2">
+<a class="anchor" href="#Acylation-of-Block-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Acylation of Block 2<a class="anchor-link" href="#Acylation-of-Block-2"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">rxn</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">ReactionFromSmarts</span><span class="p">(</span><span class="n">rxn_acylation_smarts</span><span class="p">)</span>
+<span class="n">group2_product</span> <span class="o">=</span> <span class="n">rxn</span><span class="o">.</span><span class="n">RunReactants</span><span class="p">((</span><span class="n">group2</span><span class="p">,))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">group2_product</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<?xml version='1.0' encoding='iso-8859-1'?>
+<svg version="1.1" baseprofile="full" xmlns="http://www.w3.org/2000/svg" xmlns:rdkit="http://www.rdkit.org/xml" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" width="450px" height="150px" viewbox="0 0 450 150">
+<!-- END OF HEADER -->
+<rect style="opacity:1.0;fill:#FFFFFF;stroke:none" width="450.0" height="150.0" x="0.0" y="0.0"> </rect>
+<path class="bond-0 atom-0 atom-1" d="M 317.5,83.8 L 332.0,58.6" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-0 atom-0 atom-1" d="M 332.0,58.6 L 346.6,33.4" style="fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-0 atom-0 atom-1" d="M 304.9,76.6 L 319.4,51.4" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-0 atom-0 atom-1" d="M 319.4,51.4 L 334.0,26.1" style="fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-1 atom-0 atom-2" d="M 311.2,80.2 L 326.0,105.9" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-1 atom-0 atom-2" d="M 326.0,105.9 L 340.8,131.6" style="fill:none;fill-rule:evenodd;stroke:#191919;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-2 atom-3 atom-0" d="M 238.5,80.2 L 311.2,80.2" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-3 atom-4 atom-3" d="M 202.1,143.2 L 238.5,80.2" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-4 atom-3 atom-5" d="M 238.5,80.2 L 202.1,17.2" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-5 atom-6 atom-4" d="M 129.4,143.2 L 202.1,143.2" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-6 atom-5 atom-7" d="M 202.1,17.2 L 129.4,17.2" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-7 atom-8 atom-6" d="M 93.0,80.2 L 129.4,143.2" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-8 atom-7 atom-8" d="M 129.4,17.2 L 93.0,80.2" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="atom-1" d="M 338.1 17.3
+Q 338.1 12.3, 340.5 9.6
+Q 343.0 6.8, 347.5 6.8
+Q 352.1 6.8, 354.5 9.6
+Q 357.0 12.3, 357.0 17.3
+Q 357.0 22.3, 354.5 25.1
+Q 352.0 28.0, 347.5 28.0
+Q 343.0 28.0, 340.5 25.1
+Q 338.1 22.3, 338.1 17.3
+M 347.5 25.6
+Q 350.7 25.6, 352.4 23.5
+Q 354.1 21.4, 354.1 17.3
+Q 354.1 13.2, 352.4 11.2
+Q 350.7 9.1, 347.5 9.1
+Q 344.4 9.1, 342.7 11.2
+Q 341.0 13.2, 341.0 17.3
+Q 341.0 21.4, 342.7 23.5
+Q 344.4 25.6, 347.5 25.6
+" fill="#FF0000"></path>
+<path class="atom-2" d="M 343.6 140.9
+L 346.7 137.8
+L 342.7 137.0
+L 343.3 134.9
+L 347.0 136.8
+L 346.4 132.7
+L 348.6 132.7
+L 348.0 136.8
+L 351.8 135.0
+L 352.4 137.0
+L 348.3 137.7
+L 351.2 140.9
+L 349.5 142.1
+L 347.5 138.3
+L 345.4 142.1
+L 343.6 140.9
+" fill="#191919"></path>
+</svg>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Block-2-+-Product-2-=-Final-Product">
+<a class="anchor" href="#Block-2-+-Product-2-=-Final-Product" aria-hidden="true"><span class="octicon octicon-link"></span></a>Block 2 + Product 2 = Final Product<a class="anchor-link" href="#Block-2-+-Product-2-=-Final-Product"> </a>
+</h2>
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">rxn</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">ReactionFromSmarts</span><span class="p">(</span><span class="n">rxn_acylamine_smarts</span><span class="p">)</span>
+<span class="n">final_product</span> <span class="o">=</span> <span class="n">rxn</span><span class="o">.</span><span class="n">RunReactants</span><span class="p">((</span><span class="n">group2_product</span><span class="p">,</span><span class="n">product2</span><span class="p">))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">final_product</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<?xml version='1.0' encoding='iso-8859-1'?>
+<svg version="1.1" baseprofile="full" xmlns="http://www.w3.org/2000/svg" xmlns:rdkit="http://www.rdkit.org/xml" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" width="450px" height="150px" viewbox="0 0 450 150">
+<!-- END OF HEADER -->
+<rect style="opacity:1.0;fill:#FFFFFF;stroke:none" width="450.0" height="150.0" x="0.0" y="0.0"> </rect>
+<path class="bond-0 atom-1 atom-0" d="M 190.8,84.4 L 181.4,83.8" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-0 atom-1 atom-0" d="M 181.4,83.8 L 172.0,83.2" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-1 atom-2 atom-0" d="M 161.0,103.2 L 164.4,94.9" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-1 atom-2 atom-0" d="M 164.4,94.9 L 167.7,86.6" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-4 atom-3 atom-0" d="M 157.5,64.6 L 162.2,72.0" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-4 atom-3 atom-0" d="M 162.2,72.0 L 166.8,79.4" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-11 atom-11 atom-1" d="M 196.2,105.5 L 190.8,84.4" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-16 atom-2 atom-13" d="M 161.0,103.2 L 177.8,117.1" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-2 atom-3 atom-4" d="M 157.4,62.4 L 148.2,62.8" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-2 atom-3 atom-4" d="M 148.2,62.8 L 139.1,63.1" style="fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-2 atom-3 atom-4" d="M 157.6,66.8 L 148.4,67.1" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-2 atom-3 atom-4" d="M 148.4,67.1 L 139.2,67.5" style="fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-3 atom-3 atom-5" d="M 157.5,64.6 L 167.7,45.3" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-5 atom-6 atom-5" d="M 189.4,44.5 L 167.7,45.3" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-6 atom-5 atom-7" d="M 167.7,45.3 L 156.0,26.9" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-7 atom-8 atom-6" d="M 199.5,25.2 L 189.4,44.5" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-8 atom-7 atom-9" d="M 156.0,26.9 L 166.2,7.7" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-9 atom-10 atom-8" d="M 187.9,6.8 L 199.5,25.2" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-10 atom-9 atom-10" d="M 166.2,7.7 L 187.9,6.8" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-12 atom-12 atom-11" d="M 216.4,113.6 L 196.2,105.5" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-13 atom-13 atom-11" d="M 177.8,117.1 L 196.2,105.5" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-14 atom-12 atom-14" d="M 216.4,113.6 L 219.5,135.1" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-15 atom-15 atom-12" d="M 233.5,100.1 L 216.4,113.6" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-17 atom-14 atom-16" d="M 219.5,135.1 L 239.7,143.2" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-18 atom-15 atom-17" d="M 233.5,100.1 L 242.1,103.6" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-18 atom-15 atom-17" d="M 242.1,103.6 L 250.8,107.0" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-19 atom-16 atom-18" d="M 239.7,143.2 L 256.8,129.7" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-20 atom-18 atom-17" d="M 256.8,129.7 L 255.5,120.8" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-20 atom-18 atom-17" d="M 255.5,120.8 L 254.2,111.8" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-21 atom-19 atom-17" d="M 270.8,94.7 L 263.7,100.3" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-21 atom-19 atom-17" d="M 263.7,100.3 L 256.6,105.9" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-22 atom-19 atom-20" d="M 270.0,96.7 L 278.4,100.1" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-22 atom-19 atom-20" d="M 278.4,100.1 L 286.8,103.5" style="fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-22 atom-19 atom-20" d="M 271.6,92.7 L 280.0,96.1" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-22 atom-19 atom-20" d="M 280.0,96.1 L 288.4,99.4" style="fill:none;fill-rule:evenodd;stroke:#FF0000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-23 atom-19 atom-21" d="M 270.8,94.7 L 267.7,73.2" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-24 atom-22 atom-21" d="M 251.3,64.6 L 259.5,68.9" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-24 atom-22 atom-21" d="M 259.5,68.9 L 267.7,73.2" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-24 atom-22 atom-21" d="M 255.8,62.0 L 261.5,65.0" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-24 atom-22 atom-21" d="M 261.5,65.0 L 267.2,68.0" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-25 atom-21 atom-23" d="M 267.7,73.2 L 283.3,58.0" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-26 atom-24 atom-22" d="M 251.5,45.2 L 249.0,59.5" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-27 atom-23 atom-25" d="M 283.3,58.0 L 305.0,59.4" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-27 atom-23 atom-25" d="M 286.8,53.9 L 302.0,54.9" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-28 atom-26 atom-23" d="M 273.6,38.5 L 283.3,58.0" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-29 atom-26 atom-24" d="M 273.6,38.5 L 264.3,39.8" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-29 atom-26 atom-24" d="M 264.3,39.8 L 255.0,41.2" style="fill:none;fill-rule:evenodd;stroke:#0000FF;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-30 atom-25 atom-27" d="M 305.0,59.4 L 317.1,41.3" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-31 atom-28 atom-26" d="M 285.7,20.4 L 273.6,38.5" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-31 atom-28 atom-26" d="M 287.5,25.5 L 279.1,38.2" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-32 atom-27 atom-29" d="M 317.1,41.3 L 307.4,21.8" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-32 atom-27 atom-29" d="M 311.7,40.3 L 305.0,26.7" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="bond-33 atom-29 atom-28" d="M 307.4,21.8 L 285.7,20.4" style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2.0px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"></path>
+<path class="atom-0" d="M 167.8 79.9
+L 169.8 83.2
+Q 170.0 83.5, 170.3 84.1
+Q 170.6 84.7, 170.6 84.7
+L 170.6 79.9
+L 171.5 79.9
+L 171.5 86.1
+L 170.6 86.1
+L 168.4 82.5
+Q 168.2 82.1, 167.9 81.6
+Q 167.7 81.1, 167.6 81.0
+L 167.6 86.1
+L 166.8 86.1
+L 166.8 79.9
+L 167.8 79.9
+" fill="#0000FF"></path>
+<path class="atom-4" d="M 132.9 65.4
+Q 132.9 64.0, 133.7 63.1
+Q 134.4 62.3, 135.8 62.3
+Q 137.1 62.3, 137.9 63.1
+Q 138.6 64.0, 138.6 65.4
+Q 138.6 66.9, 137.9 67.8
+Q 137.1 68.6, 135.8 68.6
+Q 134.4 68.6, 133.7 67.8
+Q 132.9 66.9, 132.9 65.4
+M 135.8 67.9
+Q 136.7 67.9, 137.2 67.3
+Q 137.7 66.7, 137.7 65.4
+Q 137.7 64.2, 137.2 63.6
+Q 136.7 63.0, 135.8 63.0
+Q 134.8 63.0, 134.3 63.6
+Q 133.8 64.2, 133.8 65.4
+Q 133.8 66.7, 134.3 67.3
+Q 134.8 67.9, 135.8 67.9
+" fill="#FF0000"></path>
+<path class="atom-17" d="M 252.3 105.1
+L 254.3 108.4
+Q 254.5 108.7, 254.9 109.3
+Q 255.2 109.9, 255.2 109.9
+L 255.2 105.1
+L 256.0 105.1
+L 256.0 111.3
+L 255.2 111.3
+L 253.0 107.7
+Q 252.8 107.3, 252.5 106.8
+Q 252.2 106.3, 252.1 106.2
+L 252.1 111.3
+L 251.3 111.3
+L 251.3 105.1
+L 252.3 105.1
+" fill="#0000FF"></path>
+<path class="atom-20" d="M 288.2 102.8
+Q 288.2 101.3, 288.9 100.5
+Q 289.6 99.7, 291.0 99.7
+Q 292.3 99.7, 293.1 100.5
+Q 293.8 101.3, 293.8 102.8
+Q 293.8 104.3, 293.1 105.2
+Q 292.3 106.0, 291.0 106.0
+Q 289.6 106.0, 288.9 105.2
+Q 288.2 104.3, 288.2 102.8
+M 291.0 105.3
+Q 291.9 105.3, 292.4 104.7
+Q 292.9 104.0, 292.9 102.8
+Q 292.9 101.6, 292.4 101.0
+Q 291.9 100.4, 291.0 100.4
+Q 290.0 100.4, 289.5 101.0
+Q 289.0 101.6, 289.0 102.8
+Q 289.0 104.1, 289.5 104.7
+Q 290.0 105.3, 291.0 105.3
+" fill="#FF0000"></path>
+<path class="atom-22" d="M 247.0 60.0
+L 249.1 63.2
+Q 249.3 63.5, 249.6 64.1
+Q 249.9 64.7, 249.9 64.8
+L 249.9 60.0
+L 250.7 60.0
+L 250.7 66.1
+L 249.9 66.1
+L 247.7 62.6
+Q 247.5 62.1, 247.2 61.7
+Q 247.0 61.2, 246.9 61.0
+L 246.9 66.1
+L 246.1 66.1
+L 246.1 60.0
+L 247.0 60.0
+" fill="#0000FF"></path>
+<path class="atom-24" d="M 244.2 38.5
+L 245.1 38.5
+L 245.1 41.1
+L 248.2 41.1
+L 248.2 38.5
+L 249.0 38.5
+L 249.0 44.7
+L 248.2 44.7
+L 248.2 41.8
+L 245.1 41.8
+L 245.1 44.7
+L 244.2 44.7
+L 244.2 38.5
+" fill="#0000FF"></path>
+<path class="atom-24" d="M 250.7 38.5
+L 252.8 41.8
+Q 253.0 42.1, 253.3 42.7
+Q 253.6 43.3, 253.6 43.3
+L 253.6 38.5
+L 254.4 38.5
+L 254.4 44.7
+L 253.6 44.7
+L 251.4 41.1
+Q 251.2 40.7, 250.9 40.2
+Q 250.6 39.7, 250.6 39.6
+L 250.6 44.7
+L 249.8 44.7
+L 249.8 38.5
+L 250.7 38.5
+" fill="#0000FF"></path>
+</svg>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Library-Generation">
+<a class="anchor" href="#Library-Generation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Library Generation<a class="anchor-link" href="#Library-Generation"> </a>
+</h1>
+<p>We can easily scale up above procedure to generate a library of compounds by combinatorially using different reaction groups</p>
+
+</div>
+</div>
+</div>
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">core_smiles_arr</span> <span class="o">=</span> <span class="p">[</span><span class="n">core_smiles</span><span class="p">]</span>
+<span class="n">block_smiles_arr</span> <span class="o">=</span> <span class="p">[</span><span class="n">group1_smiles</span><span class="p">,</span> <span class="n">group2_smiles</span><span class="p">]</span>
+  
+<span class="c1"># turn smiles to mol object</span>
+<span class="n">core_arr</span> <span class="o">=</span> <span class="p">[</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="n">smiles</span><span class="p">)</span> <span class="k">for</span> <span class="n">smiles</span> <span class="ow">in</span> <span class="n">core_smiles_arr</span><span class="p">]</span>
+<span class="n">block_arr</span> <span class="o">=</span> <span class="p">[</span><span class="n">Chem</span><span class="o">.</span><span class="n">MolFromSmiles</span><span class="p">(</span><span class="n">smiles</span><span class="p">)</span> <span class="k">for</span> <span class="n">smiles</span> <span class="ow">in</span> <span class="n">block_smiles_arr</span><span class="p">]</span>
+
+<span class="c1"># set names for image generation</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">core</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">core_arr</span><span class="p">):</span>
+    <span class="n">core</span><span class="o">.</span><span class="n">SetProp</span><span class="p">(</span><span class="s2">"_Name"</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'Core</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">block</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">block_arr</span><span class="p">):</span>
+    <span class="n">block</span><span class="o">.</span><span class="n">SetProp</span><span class="p">(</span><span class="s2">"_Name"</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'Block</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span>
+
+<span class="n">product_library</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">def</span> <span class="nf">reaction</span><span class="p">(</span><span class="n">core</span><span class="p">,</span> <span class="n">group1</span><span class="p">,</span> <span class="n">group2</span><span class="p">):</span>
+    <span class="n">rxn</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">ReactionFromSmarts</span><span class="p">(</span><span class="n">rxn_acylation_smarts</span><span class="p">)</span>
+    <span class="n">group1_product</span> <span class="o">=</span> <span class="n">rxn</span><span class="o">.</span><span class="n">RunReactants</span><span class="p">((</span><span class="n">group1</span><span class="p">,))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    
+    <span class="n">rxn</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">ReactionFromSmarts</span><span class="p">(</span><span class="n">rxn_acylamine_smarts</span><span class="p">)</span>
+    <span class="n">product1</span> <span class="o">=</span> <span class="n">rxn</span><span class="o">.</span><span class="n">RunReactants</span><span class="p">((</span><span class="n">group1_product</span><span class="p">,</span><span class="n">core</span><span class="p">))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    
+    <span class="n">rxn</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">ReactionFromSmarts</span><span class="p">(</span><span class="n">rxn_deprotection_smarts</span><span class="p">)</span>
+    <span class="n">product2</span> <span class="o">=</span> <span class="n">rxn</span><span class="o">.</span><span class="n">RunReactants</span><span class="p">((</span><span class="n">product1</span><span class="p">,))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    
+    <span class="n">rxn</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">ReactionFromSmarts</span><span class="p">(</span><span class="n">rxn_acylation_smarts</span><span class="p">)</span>
+    <span class="n">group2_product</span> <span class="o">=</span> <span class="n">rxn</span><span class="o">.</span><span class="n">RunReactants</span><span class="p">((</span><span class="n">group2</span><span class="p">,))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    
+    <span class="n">rxn</span> <span class="o">=</span> <span class="n">AllChem</span><span class="o">.</span><span class="n">ReactionFromSmarts</span><span class="p">(</span><span class="n">rxn_acylamine_smarts</span><span class="p">)</span>
+    <span class="n">product</span> <span class="o">=</span> <span class="n">rxn</span><span class="o">.</span><span class="n">RunReactants</span><span class="p">((</span><span class="n">group2_product</span><span class="p">,</span><span class="n">product2</span><span class="p">))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">product</span>
+
+
+<span class="k">for</span> <span class="n">core</span> <span class="ow">in</span> <span class="n">core_arr</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">block1</span><span class="p">,</span> <span class="n">block2</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="n">block_arr</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+        <span class="n">compound</span> <span class="o">=</span> <span class="n">reaction</span><span class="p">(</span><span class="n">core</span><span class="p">,</span> <span class="n">block1</span><span class="p">,</span> <span class="n">block2</span><span class="p">)</span>
+        <span class="n">compound</span><span class="o">.</span><span class="n">SetProp</span><span class="p">(</span><span class="s1">'_Name'</span><span class="p">,</span> <span class="sa">f</span><span class="s1">'</span><span class="si">{</span><span class="n">block1</span><span class="o">.</span><span class="n">GetProp</span><span class="p">(</span><span class="s2">"_Name"</span><span class="p">)</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">core</span><span class="o">.</span><span class="n">GetProp</span><span class="p">(</span><span class="s2">"_Name"</span><span class="p">)</span><span class="si">}</span><span class="s1">-</span><span class="si">{</span><span class="n">block2</span><span class="o">.</span><span class="n">GetProp</span><span class="p">(</span><span class="s2">"_Name"</span><span class="p">)</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+        <span class="n">product_library</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">compound</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+    
+
+    
+    
+<div class="cell border-box-sizing code_cell rendered">
+<details class="description">
+      <summary class="btn btn-sm" data-open="Hide Code" data-close="Show Code"></summary>
+        <p></p>
+<div class="input">
+
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">rdkit.Chem.Draw</span> <span class="kn">import</span> <span class="n">rdMolDraw2D</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
+
+<span class="n">ms</span> <span class="o">=</span> <span class="p">[</span><span class="n">Chem</span><span class="o">.</span><span class="n">RemoveHs</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">product_library</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">ms</span><span class="p">:</span> <span class="n">tmp</span><span class="o">=</span><span class="n">AllChem</span><span class="o">.</span><span class="n">Compute2DCoords</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="n">legends</span><span class="o">=</span><span class="p">[</span><span class="s2">"</span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">GetProp</span><span class="p">(</span><span class="s2">"_Name"</span><span class="p">),</span> <span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ms</span><span class="p">)]</span>
+
+<span class="n">molsPerRow</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">subImgSize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">300</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
+<span class="n">width</span> <span class="o">=</span> <span class="n">subImgSize</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">molsPerRow</span>
+<span class="n">height</span> <span class="o">=</span> <span class="n">subImgSize</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ms</span><span class="p">)</span> <span class="o">/</span> <span class="n">molsPerRow</span><span class="p">)</span>
+<span class="n">d2d</span> <span class="o">=</span> <span class="n">rdMolDraw2D</span><span class="o">.</span><span class="n">MolDraw2DCairo</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">subImgSize</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">subImgSize</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">d2d</span><span class="o">.</span><span class="n">drawOptions</span><span class="p">()</span><span class="o">.</span><span class="n">legendFontSize</span><span class="o">=</span><span class="mi">24</span>
+
+<span class="n">d2d</span><span class="o">.</span><span class="n">DrawMolecules</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span><span class="n">legends</span><span class="o">=</span><span class="n">legends</span><span class="p">)</span>
+<span class="n">d2d</span><span class="o">.</span><span class="n">FinishDrawing</span><span class="p">()</span>
+<span class="n">img</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">()</span>
+<span class="n">img</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">d2d</span><span class="o">.</span><span class="n">GetDrawingText</span><span class="p">())</span>
+
+<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+    </details>
+<div class="output_wrapper">
+<div class="output">
+
+<div class="output_area">
+
+
+
+<div class="output_png output_subarea output_execute_result">
+<img src="data:image/png;base64,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%0A">
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+    
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Conclusion">
+<a class="anchor" href="#Conclusion" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conclusion<a class="anchor-link" href="#Conclusion"> </a>
+</h1>
+<p>The actual code for building library was straightforward, as long as the fragments and the reactions are well curated, but I can imagine maintaining such curated fragment/reaction library at scale will be certainly a challenge.</p>
+<p>Also, if one attempts to build the entire possible library, the amount of computation will grow exponentially. For example, if we have 300 functional group blocks and 200 core blocks, which permits two reactions, the number of possible combinations are two billion already.</p>
+<p><img src="/blog/images/copied_from_nb/files/two_billion_meme.jpg" alt="feature"></p>
+<p>The <a href="https://pubmed.ncbi.nlm.nih.gov/34912117/">paper</a> also illustrates how such database can be constructed on-the-fly with clever use of virtual screening method, alleviate the need to store the entire library on disk and reduce computation significantly.</p>
+
+</div>
+</div>
+</div>
+</div>
+
+
+
+  </div><!-- from https://github.com/utterance/utterances -->
+<script src="https://utteranc.es/client.js"
+        repo="sunhwan/blog"
+        issue-term="title"
+        label="blogpost-comment"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script><a class="u-url" href="/blog/2021/12/22/Generating-Reaction-Library-Compound.html" hidden></a>
+</article>
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/blog/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+        <p class="feed-subscribe">
+          <a href="/blog/feed.xml">
+            <svg class="svg-icon orange">
+              <use xlink:href="/blog/assets/minima-social-icons.svg#rss"></use>
+            </svg><span>Subscribe</span>
+          </a>
+        </p>
+      </div>
+      <div class="footer-col">
+        <p>Computational chemist. Personal blog for code and science.</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/sunhwan" title="sunhwan"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://twitter.com/sunhwan" title="sunhwan"><svg class="svg-icon grey"><use xlink:href="/blog/assets/minima-social-icons.svg#twitter"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
