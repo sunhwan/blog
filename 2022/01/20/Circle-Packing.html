@@ -642,14 +642,6 @@ $</p>
     <span class="k">if</span> <span class="n">torque</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">I1</span><span class="p">,</span> <span class="n">I2</span> <span class="o">=</span> <span class="n">I2</span><span class="p">,</span> <span class="n">I1</span>
     <span class="k">return</span> <span class="n">I1</span><span class="p">,</span> <span class="n">I2</span>
-
-    <span class="n">theta1</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">I1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">y0</span><span class="p">,</span> <span class="n">I1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">x0</span><span class="p">)</span>
-    <span class="n">theta2</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">I2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">y0</span><span class="p">,</span> <span class="n">I2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">x0</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">theta2</span> <span class="o">&gt;</span> <span class="n">theta1</span><span class="p">:</span>
-        <span class="k">pass</span>
-        
-    <span class="nb">print</span><span class="p">(</span><span class="n">theta2</span><span class="p">,</span> <span class="n">theta1</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">I1</span><span class="p">,</span> <span class="n">I2</span>
 </pre></div>
 
     </div>
