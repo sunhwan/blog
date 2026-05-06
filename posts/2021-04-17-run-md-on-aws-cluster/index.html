@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2021-04-17">
+<meta name="description" content="Setup AWS cluster using parallel-cluster package and run MD simulation on the AWS cluster">
+
+<title>Run Molecular Dynamics Simulation on AWS Cluster – Sunhwan Jo</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-acf12a64177840b8d86f2d4f01b2e9fb.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-fc7876cc03e732b58c10ef6871c115d6.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Sunhwan Jo</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About Me</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/sunhwan"> <i class="bi bi-github" role="img" aria-label="GitHub">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml"> <i class="bi bi-rss" role="img" aria-label="RSS">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#prerequisite" id="toc-prerequisite" class="nav-link active" data-scroll-target="#prerequisite">Prerequisite</a></li>
+  <li><a href="#initial-configuration" id="toc-initial-configuration" class="nav-link" data-scroll-target="#initial-configuration">Initial Configuration</a></li>
+  <li><a href="#update-configuration" id="toc-update-configuration" class="nav-link" data-scroll-target="#update-configuration">Update Configuration</a></li>
+  <li><a href="#create-cluster" id="toc-create-cluster" class="nav-link" data-scroll-target="#create-cluster">Create Cluster</a></li>
+  <li><a href="#run-md-simulation" id="toc-run-md-simulation" class="nav-link" data-scroll-target="#run-md-simulation">Run MD Simulation</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Run Molecular Dynamics Simulation on AWS Cluster</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Cloud</div>
+    <div class="quarto-category">MD Simulation</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Setup AWS cluster using parallel-cluster package and run MD simulation on the AWS cluster
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 17, 2021</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><strong>AWS and other cloud platform offers flexible computing resources at a reasonable price. There are many ways to take advantage of such cloud resource. Here, I’m going to show you how to setup a traditional cluster on AWS using <code>parallel-cluster</code> and perform MD simulation on it.</strong></p>
+<section id="prerequisite" class="level2">
+<h2 class="anchored" data-anchor-id="prerequisite">Prerequisite</h2>
+<p>To use AWS <code>parallel-cluster</code>, you will have to install AWS CLI (command line interface). Install using <code>pip install awscli</code> and configure the CLI using <code>aws configure</code> command. It will ask AWS access key ID and passphrase.</p>
+<pre><code>$ aws configure
+AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
+AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+Default region name [us-east-1]: us-east-1
+Default output format [None]:</code></pre>
+<p>Note that <code>pip</code> installs AWS CLI version 1 and there is a new major version of AWS CLI (version 2), which can only installed using a package. The CLI version 1 still works, but in the future it may be deprecated. See <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-install.html">here</a> for more information.</p>
+<p>After installing AWS CLI, install <code>parallel-cluster</code> using <code>pip</code>.</p>
+<pre><code>pip install parallelcluster</code></pre>
+</section>
+<section id="initial-configuration" class="level2">
+<h2 class="anchored" data-anchor-id="initial-configuration">Initial Configuration</h2>
+<p>First create a configuration file using <code>pcluster configure</code> command. This command creates a configuration file, which can be edited later. A detailed explanation can be found in their <a href="https://docs.aws.amazon.com/parallelcluster/latest/ug/getting-started-configuring-parallelcluster.html">documentation</a>, so I’ll not cover these in depth.</p>
+<p>I chose default option for the most part: <code>slurm</code> for the scheduler, <code>ailinux2</code> for the operating system, both master node and compute node as <code>t2.micro</code> (we will change this later), and create VPC automatically with master node in public and compute node in private network option. The configuration file will be saved in <code>~/.pcluster/config</code>.</p>
+</section>
+<section id="update-configuration" class="level2">
+<h2 class="anchored" data-anchor-id="update-configuration">Update Configuration</h2>
+<p>Let’s update the default configuration file saved in <code>~/.pcluster/config</code> to what we want. First, we want to add <code>[ebs]</code> section. AWS EBS (Elastic Block Storage) volume is mounted as NFS (Network File System) in all of compute node, so the files can be persistently stored.</p>
+<pre><code>[ebs default]
+shared_dir = /shared
+volume_type = sc1
+volume_size = 500</code></pre>
+<p>Here, I’m asking 500 GB of HDD (<code>sc1</code>) to be mounted on <code>/shared</code> folder.</p>
+<p>Another important update to be made is the <code>[queue]</code> and <code>[compute_resource]</code> section.</p>
+<pre><code>[queue gpu]
+enable_efa = false
+compute_resource_settings = gpu
+compute_type = spot
+
+[queue cpu]
+enable_efa = false
+compute_resource_settings = cpu
+compute_type = spot
+
+[compute_resource gpu]
+instance_type = p3.2xlarge
+min_count = 0
+initial_count = 0
+max_count = 10
+spot_price = 1.5
+
+[compute_resource cpu]
+instance_type = c5.2xlarge
+min_count = 0
+initial_count = 0
+max_count = 10
+spot_price = 0.5</code></pre>
+<p>Here, I’m defining <code>cpu</code> and <code>gpu</code> queues that use <code>c5.2xlarge</code> instance and <code>p3.2xlarge</code> instances, respectively. I asked both queue to utilize spot instances and the maximum bidding price is set to 0.5 and 1.5 USD for <code>cpu</code> and <code>gpu</code>.</p>
+<p>The full example configuration file can be found in <a href="https://gist.github.com/sunhwan/9faafdc37cd29c6b8d16f8689e618cc0">here</a>.</p>
+</section>
+<section id="create-cluster" class="level2">
+<h2 class="anchored" data-anchor-id="create-cluster">Create Cluster</h2>
+<p>Let’s create the cluster named <code>cloudmd</code> using the configuration just created now by</p>
+<pre><code>pcluster create cloudmd</code></pre>
+<p>Once the cluster is created, you can SSH into the cluster master node using the following command.</p>
+<pre><code>pcluster ssh cloudmd</code></pre>
+<p>If you know the public IP address of the master node, you can <code>ssh</code> directly to the node (check the AWS EC2 Dashboard). You should be able to see 500GB of EBS is mounted on <code>/shared</code> folder and two queues, <code>cpu</code> and <code>gpu</code>, are ready. The <code>gpu</code> queue is intended for running MD simulation and machine learning tasks using GPU whereas the <code>cpu</code> queue is ideal for the tasks that only requires CPUs, such as docking tasks.</p>
+<pre><code>[ec2-user@ip-10-0-0-104 ~]$ df -h
+Filesystem      Size  Used Avail Use% Mounted on
+devtmpfs        2.0G     0  2.0G   0% /dev
+tmpfs           2.0G     0  2.0G   0% /dev/shm
+tmpfs           2.0G  532K  2.0G   1% /run
+tmpfs           2.0G     0  2.0G   0% /sys/fs/cgroup
+/dev/xvda1       25G   13G   13G  51% /
+/dev/xvdb       493G   73M  467G   1% /shared
+tmpfs           395M     0  395M   0% /run/user/1000
+
+[ec2-user@ip-10-0-0-104 ~]$ sinfo
+PARTITION AVAIL  TIMELIMIT  NODES  STATE NODELIST
+cpu          up   infinite     10  idle~ cpu-dy-c52xlarge-[1-10]
+gpu*         up   infinite     10  idle~ gpu-dy-p32xlarge-[1-10]</code></pre>
+<p>Note that there are no compute nodes currently running. Only when jobs are submitted and waiting in the queue, the compute node will bring up the compute nodes until jobs are all finished. This greatly reduces compute cost without manually bring the nodes up and down yourself.</p>
+<p>We plan to use the spot pricing, which will also reduce cost down further. You can check the historic spot instance pricing from this <a href="https://aws.amazon.com/ec2/spot/pricing/">link</a> or from the EC2 dashboard (see this <a href="https://sunhwan.github.io/blog/assets/examples/cloudmd/ec2_dashboard_spot_pricing_history.png">screenshot</a>).</p>
+<p>One down side of the spot pricing is that, when the cost of spot price goes over the maximum bid price we set, the node will be shut down. In that case, the Slurm scheduler will resubmit the job again automatically. If you set your Slurm job script to take care of the restart, your job will start running when the spot instance is available again.</p>
+</section>
+<section id="run-md-simulation" class="level2">
+<h2 class="anchored" data-anchor-id="run-md-simulation">Run MD Simulation</h2>
+<p>Let’s first install MD simulation package, OpenMM, in our shared volume. We will use Miniconda as a package manager.</p>
+<pre><code># download Miniconda
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+
+# install Miniconda
+/bin/bash Miniconda3-latest-Linux-x86_64.sh -b -p /shared/miniconda/
+
+# add Miniconda to your PATH
+export PATH=/shared/miniconda/bin:$PATH
+
+# install OpenMM
+conda install -c conda-forge openmm</code></pre>
+<p>I have built an example MD simulation system using Lysozyme (PDB:181L). You can download it from <a href="">here</a>.</p>
+<pre><code># download MD simulation system
+cd /shared
+wget https://sunhwan.github.io/blog/assets/examples/cloudmd/charmm-gui-181l-openmm.tar.gz
+tar -xvzf charmm-gui-181l-openmm.tar.gz
+
+# prepare Slurm job script
+cd charmm-gui-1894063249/openmm
+
+echo "#!/bin/bash
+#SBATCH --job-name=MD-example  # Job name
+#SBATCH --partition=gpu
+#SBATCH --ntasks=1             # Request 1 CPU
+#SBATCH --time=2:00:00         # Time limit hrs:min:sec
+#SBATCH --gpus=1               # Request 1 GPU
+export PATH=/shared/miniconda/bin:$PATH
+/bin/csh README" &gt; run.sh
+
+# submit the job script
+sbatch run.sh</code></pre>
+<p>You can monitor the progress of job using <code>squeue</code> and <code>sinfo</code> commands. If your compute node is not running, you may want to check your EC2 instance limit from your AWS EC2 dashboard. They are usually very low by default. For me, <code>All P Spot Instance</code> vCPU was limited to 4, but <code>p3.2xlarge</code> instance have 8 vCPU, hence compute node was not able to start and cycled through starting and failing. Make sure the instance type have enough amount of vCPU allocatable.</p>
+<p>The MD simulation in my example file is set to run a short equilibration and 10 ns of production simulation. The simulation system contains 43K atoms and the task took about two hours, so about 120 ns/day of throughput on <code>p3</code> instance. At the time the task ran, the <code>p3</code> spot instance cost about USD $0.918 per hr, so the 10 ns MD simulation cost us about USD $1.8 from the GPU instance. You will have additional cost from running master node (<code>t2.micro</code> cost $0.0116 per hr ~ $0.27/day), using the EBS disk storage ($0.015 per GB per month ~ $0.25/day for 500GB), and network data transfer. Clearly, the compute cost is the bulk of the cost. Running the same task using the on-demand <code>p3.2xlarge</code> instance would have cost about USD $6, which is about 3x saving by using the spot instance.</p>
+<p>When you are finished using the cluster, you could put it to sleep using this command.</p>
+<pre><code>pcluster stop cloudmd</code></pre>
+<p>This stops running master node and EBS volume, however, does not remove them, hence some small cost would still incur in this state. You can delete the cluster completely using the command:</p>
+<pre><code>pcluster delete cloudmd</code></pre>
+<p>Note that this will also remove EBS volume as well, therefore you want to create a backup of the volume before doing this. If you create a snapshot of the volume, you can use the snapshot to build the EBS volume in the future.</p>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>AWS <code>parallel-cluster</code> provide a very easy way to create your own cluster in just a minutes. The cluster can be configured in various ways to fit your needs whether you are interested in machine learning or MD simulation, or some other task (render farm?). The compute nodes are only brought up when there’s a task waiting in the scheduler queue, so the total cost is minimum. No more turning up and down the EC2 instance by yourself.</p>
+<p>You can further save the cost by using the spot instance with the risk of your node shutdown middle of the task. Slurm scheduler let the job back in the queue if that happens, so you want to write the Slurm job script to take care of the restart.</p>
+<p><code>parallel-cluster</code> really did a good job at making people to tap into cloud infrastructure easily and cheaply. I started using this tool when it was <code>cfncluster</code> and it came a long way. I really appreciate the team for continuing development in this package. ❤️</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/sunhwan\.github\.io\/blog");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

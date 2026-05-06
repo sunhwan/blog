@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2021-04-27">
+<meta name="description" content="Run MD simulation on a dockerized container and AWS Batch as a simple scheduler">
+
+<title>Run Molecular Dynamics Simulation on Container and AWS Batch – Sunhwan Jo</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-acf12a64177840b8d86f2d4f01b2e9fb.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-fc7876cc03e732b58c10ef6871c115d6.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Sunhwan Jo</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About Me</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/sunhwan"> <i class="bi bi-github" role="img" aria-label="GitHub">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="../../index.xml"> <i class="bi bi-rss" role="img" aria-label="RSS">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#initial-configuration" id="toc-initial-configuration" class="nav-link active" data-scroll-target="#initial-configuration">Initial Configuration</a></li>
+  <li><a href="#prepare-containerized-md-simulation" id="toc-prepare-containerized-md-simulation" class="nav-link" data-scroll-target="#prepare-containerized-md-simulation">Prepare Containerized MD Simulation</a></li>
+  <li><a href="#submit-test-job" id="toc-submit-test-job" class="nav-link" data-scroll-target="#submit-test-job">Submit Test Job</a></li>
+  <li><a href="#more-realistic-test" id="toc-more-realistic-test" class="nav-link" data-scroll-target="#more-realistic-test">More Realistic Test</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Run Molecular Dynamics Simulation on Container and AWS Batch</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">Cloud</div>
+    <div class="quarto-category">MD Simulation</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Run MD simulation on a dockerized container and AWS Batch as a simple scheduler
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">April 27, 2021</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><strong>AWS and other cloud platform offers flexible computing resources at a reasonable price. There are many ways to take advantage of such cloud resource. In the <a href="https://sunhwan.github.io/blog/2021/04/17/Run-Molecular-Dynamics-Simulation-on-AWS-Cluster.html">last post</a>, I examined running MD simulation using AWS Parallel Cluster. Here, I’m going to show you how to run MD simulation using AWS Batch</strong></p>
+<p>I used these articles when I wrote this post. It may be helpful for you as well: - <a href="https://aws.amazon.com/blogs/compute/creating-an-aws-batch-environment-for-mixed-cpu-and-gpu-genomics-workflows/">Creating an AWS Batch environment for mixed CPU and GPU genomics workflows</a> - <a href="https://aws.amazon.com/blogs/compute/creating-a-simple-fetch-and-run-aws-batch-job/">Creating a Simple “Fetch &amp; Run” AWS Batch Job</a></p>
+<section id="initial-configuration" class="level2">
+<h2 class="anchored" data-anchor-id="initial-configuration">Initial Configuration</h2>
+<p>AWS Batch acts as a simple queuing system where the user can submit a task that can be ran on containers. We will have to create a compute environment on AWS Batch first. I created a managed compute environment, named <code>gpu</code> using AWS Batch Dashboard. I selected provision model as <code>spot</code> and allowed instances as <code>p2</code> and <code>p3</code>. I set <code>Maximum % on-demand price</code> as <code>100%</code>, which means, my instance will be terminated when the price of spot instance goes over 100% of the on-demand instance price.</p>
+<p>Next, create a job queue called <code>gpu</code> and make it use the <code>gpu</code> compute environment we just created.</p>
+</section>
+<section id="prepare-containerized-md-simulation" class="level2">
+<h2 class="anchored" data-anchor-id="prepare-containerized-md-simulation">Prepare Containerized MD Simulation</h2>
+<p>Next, we prepare a Docker image for MD simulation. This Docker image will be used in a task. For a test, let’s prepare a very simple Dockerfile and use it for AWS Batch.</p>
+<pre><code>FROM nvidia/cuda:11.3.0-base-ubuntu18.04 as base
+
+ENV PATH="/root/miniconda3/bin:${PATH}"
+ARG PATH="/root/miniconda3/bin:${PATH}"
+RUN apt-get update
+
+RUN apt-get install -y wget &amp;&amp; rm -rf /var/lib/apt/lists/*
+
+RUN wget \
+    https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
+    &amp;&amp; mkdir /root/.conda \
+    &amp;&amp; bash Miniconda3-latest-Linux-x86_64.sh -b \
+    &amp;&amp; rm -f Miniconda3-latest-Linux-x86_64.sh
+RUN conda --version
+
+RUN conda install -c conda-forge openmm</code></pre>
+<p>I built the image and uploaded to Docker hub as <code>sunhwan/openmm</code>.</p>
+<p>Next, let’s create a job definition from the AWS Batch Dashboard. I selected platform as <code>EC2</code>, image as <code>sunhwan/openmm</code>, and selected the number of GPUs as <code>1</code>.</p>
+<p>Command parameter in the job definition is what gets executed after initialize the Docker image. Because this is a test, let’s use <code>python -m simtk.testInstallation</code> for the command.</p>
+</section>
+<section id="submit-test-job" class="level2">
+<h2 class="anchored" data-anchor-id="submit-test-job">Submit Test Job</h2>
+<p>This is straightforward using the AWS Batch Dashboard. Select <code>Submit New Job</code> menu from the dashboard and select the job queue and the job definition we just created. It should populate default option for you. Select <code>Submit</code> at the bottom of the page, and Voilà, the job is submitted. Wait a few seconds (or minutes) and you should be able to see the job is being processed and finished running.</p>
+<p>To check the output, you will have to check the log stream in the jobs detail page. Below is from my test.</p>
+<pre><code>--------------------------------------------------------------------------
+|   timestamp   |                        message                         |
+|---------------|--------------------------------------------------------|
+| 1619451128901 | OpenMM Version: 7.5                                    |
+| 1619451128901 | Git Revision: b49b82efb5a253a7c891ca084b3370e181de2ea3 |
+| 1619451128901 | There are 3 Platforms available:                       |
+| 1619451128901 | 1 Reference - Successfully computed forces             |
+| 1619451128901 | 2 CPU - Successfully computed forces                   |
+| 1619451128901 | 3 CUDA - Successfully computed forces                  |
+| 1619451128901 | Median difference in forces between platforms:         |
+| 1619451128901 | Reference vs. CPU: 6.29939e-06                         |
+| 1619451128901 | Reference vs. CUDA: 6.72706e-06                        |
+| 1619451128901 | CPU vs. CUDA: 7.36308e-07                              |
+| 1619451128901 | All differences are within tolerance.                  |
+--------------------------------------------------------------------------</code></pre>
+</section>
+<section id="more-realistic-test" class="level2">
+<h2 class="anchored" data-anchor-id="more-realistic-test">More Realistic Test</h2>
+<p>Let’s try a more general example. Let’s create a job definition that can take script (and input structure) from AWS S3, run MD simulation, and store the output back on the S3 storage.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../assets/figures/awsbatch.png" class="img-fluid figure-img"></p>
+<figcaption>AWS Arrangement</figcaption>
+</figure>
+</div>
+<p>To achieve this, we need to prepare several settings:</p>
+<ol type="1">
+<li><p>S3 bucket</p>
+<p>Create an S3 bucket for storing input script (or structure) and output.</p></li>
+<li><p>IAM Role</p>
+<p>Create an IAM roles that allows containers launched from jobs to access S3 storage. I created a role named <code>aws-batch-s3-access</code> for <code>Elastic Container Service</code> &gt; <code>Elastic Container Service Task</code> &gt; <code>AmazonS3FullAccess</code>.</p></li>
+<li><p>Dockerfile</p>
+<p>Based on the Dockerfile used in the previous section, I expanded it to install AWS CLI and use <code>fetch_and_run.sh</code> script as an entrypoint script. The <code>fetch_and_run.sh</code> simply download files from S3 using the user supplied environment variable (set in job definition).</p>
+<pre><code>FROM sunhwan/openmm as base
+FROM nvidia/cuda:11.3.0-base-ubuntu18.04
+
+ENV PATH="/root/miniconda3/bin:${PATH}"
+ARG PATH="/root/miniconda3/bin:${PATH}"
+
+RUN apt-get update &amp;&amp; apt-get install -y unzip wget
+
+COPY --from=base /root/miniconda3/. /root/miniconda3
+
+RUN wget "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" &amp;&amp; \
+    unzip awscli-exe-linux-x86_64.zip &amp;&amp; \
+    ./aws/install &amp;&amp; \
+    rm -rf ./aws
+
+ADD fetch_and_run.sh /usr/local/bin/fetch_and_run.sh
+WORKDIR /tmp
+
+ENTRYPOINT ["/usr/local/bin/fetch_and_run.sh"]</code></pre></li>
+<li><p>Upload job script to S3 bucket. I uploaded the following job script to S3. This file will be provided to job as a parameter.</p>
+<pre><code>$ cat &gt; myjob.sh &lt;&lt;EOF
+#!/bin/bash
+
+date
+echo "Args: $@"
+env
+echo "This is my simple test job!."
+echo "jobId: $AWS_BATCH_JOB_ID"
+
+wget https://sunhwan.github.io/blog/assets/examples/cloudmd/charmm-gui-181l-openmm.tar.gz
+tar -xvzf charmm-gui-181l-openmm.tar.gz
+
+# prepare Slurm job script
+cd charmm-gui-1894063249/openmm
+
+/bin/bash run.sh
+EOF
+
+$ aws s3 cp myjob.sh s3://&lt;bucket&gt;/myjob.sh</code></pre></li>
+</ol>
+<p>That’s a lot of boilerplate! All is left is to revise the job definition file to submit a job. Note that we need to supply the IAM role for S3 access and the environment variables for <code>fetch_and_run.sh</code> script. The job script should</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../../assets/figures/awsbatch_jobdefinition.png" class="img-fluid figure-img"></p>
+<figcaption>AWS Job Definition</figcaption>
+</figure>
+</div>
+<p>A job submitted with this definition will sit in a job queue for a while (it took me more time because I selected spot pricing and it appears the price at the moment was higher than what I asked) then started running and finished in about an hour after running the simulation.</p>
+<p>My job script does not handles restarting in container properly. To handle this properly, the checkpoint file has to be written on S3 to make it persistent and examine if there’s any restart file in S3 storage when a new job started.</p>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>In the <a href="https://sunhwan.github.io/blog/2021/04/17/Run-Molecular-Dynamics-Simulation-on-AWS-Cluster.html">last post</a>, I used AWS <code>parallel-cluster</code> to build a cluster quickly and ran MD simulation on GPU instance. This is great for users quickly test system setup and run MD simulation all at the same time.</p>
+<p>This time, I looked at how I can set up MD simulation using Docker container and AWS Batch as a scheduler. Using container is great because my simulation will always run at a controlled environment. In addition, we now don’t have to maintain the master node because container image can be tested/deployed from a laptop.</p>
+<p>Using AWS Batch and container does require more setup up front, however, if the tasks are well-defined and if the tasks do not change often, then it is a great way to simplify task setup and management. As an added benefit, all job definition/task submission can be done from a command line (using AWS CLI) or can be done progamatically using AWS API. It is probably very useful to set up some kind of high-throughput workflow that use MD simulation (e.g., docking -&gt; run MM/GBSA or some adaptive MD simulation algorithm) when it is coupled with workflow scripts such as AWS Step Function.</p>
+<p>One aspect that I find it challenging is how to bring files in and out of the container. I used S3 in this example, but I found this more cumbersome. Probably there are more convenient file storage options available for AWS container tasks.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/sunhwan\.github\.io\/blog");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
