@@ -1,0 +1,31 @@
+project:
+  type: website
+  output-dir: _site
+  resources:
+    - assets/**
+
+website:
+  title: "Sunhwan Jo"
+  description: "Computational chemist. Personal blog for code and science."
+  site-url: https://sunhwan.github.io/blog
+  repo-url: https://github.com/sunhwan/blog
+  navbar:
+    right:
+      - href: index.qmd
+        text: Home
+      - about.qmd
+      - icon: github
+        href: https://github.com/sunhwan
+        aria-label: GitHub
+      - icon: rss
+        href: index.xml
+        aria-label: RSS
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+    code-copy: true
+    code-overflow: wrap
+    highlight-style: github
+    html-math-method: katex

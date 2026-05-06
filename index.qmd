@@ -1,0 +1,13 @@
+---
+title: "Sunhwan Jo"
+subtitle: "Computational chemist. Personal blog for code and science."
+listing:
+  contents: posts
+  type: default
+  sort: "date desc"
+  categories: true
+  feed: true
+  fields: [date, title, description, categories]
+page-layout: full
+title-block-banner: false
+---

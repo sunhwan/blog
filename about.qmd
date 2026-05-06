@@ -1,0 +1,8 @@
+---
+title: "About Me"
+aliases:
+  - /about/
+  - /about.html
+---
+
+This website is powered by **[Quarto](https://quarto.org)**.
