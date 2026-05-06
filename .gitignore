@@ -10,3 +10,6 @@ __pycache__
 _site/
 /.quarto/
 **/*.quarto_ipynb
+
+# Personal data not for publication
+posts/2026-05-06-strava-fitness-and-race-pace/activities.json
