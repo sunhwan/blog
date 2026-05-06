@@ -10,7 +10,2160 @@
 <atom:link href="https://sunhwan.github.io/blog/index.xml" rel="self" type="application/rss+xml"/>
 <description>Computational chemist. Personal blog for code and science.</description>
 <generator>quarto-1.9.37</generator>
-<lastBuildDate>Thu, 20 Jan 2022 00:00:00 GMT</lastBuildDate>
+<lastBuildDate>Wed, 06 May 2026 00:00:00 GMT</lastBuildDate>
+<item>
+  <title>Running Progress from a Decade of Strava Data</title>
+  <link>https://sunhwan.github.io/blog/posts/2026-05-06-strava-fitness-and-race-pace/</link>
+  <description><![CDATA[ 
+
+
+
+
+<div id="08b9e063" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-05-06T19:34:41.280768Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-05-06T19:34:41.280651Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-05-06T19:34:42.635709Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-05-06T19:34:42.635116Z&quot;}}" data-execution_count="1">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> json</span>
+<span id="cb1-2"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> datetime <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> datetime</span>
+<span id="cb1-3"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> pathlib <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> Path</span>
+<span id="cb1-4"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> collections <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> defaultdict</span>
+<span id="cb1-5"></span>
+<span id="cb1-6"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> numpy <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> np</span>
+<span id="cb1-7"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> plt</span>
+<span id="cb1-8"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> matplotlib.dates <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">as</span> mdates</span>
+<span id="cb1-9"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> matplotlib.colors <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> LinearSegmentedColormap</span>
+<span id="cb1-10"><span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">from</span> scipy.optimize <span class="im" style="color: #00769E;
+background-color: null;
+font-style: inherit;">import</span> curve_fit</span>
+<span id="cb1-11"></span>
+<span id="cb1-12"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Custom monotonic gray -&gt; blue colormap, used in all plots below</span></span>
+<span id="cb1-13">gray_blue <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> LinearSegmentedColormap.from_list(</span>
+<span id="cb1-14">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'gray_blue'</span>, [(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.78</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.78</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.78</span>), (<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.10</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.30</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.65</span>)])</span>
+<span id="cb1-15">BLUE <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.10</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.30</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.65</span>)</span></code></pre></div></div>
+</details>
+</div>
+<section id="motivation" class="level1">
+<h1>Motivation</h1>
+<p>I started keeping a weekly running spreadsheet in December and noticed the numbers were drifting in the right direction: pace getting faster, HR lower at the same effort. It <em>felt</em> like I was getting fitter, but few months of subjective feel is not entirely reliable. So, I pulled my full Strava history (11 years, 803 runs) and tried to look at it more carefully.</p>
+<p>Here, I’ll focus on two questions: is my aerobic fitness actually improving (recently and over the long arc), and how has race pace progressed across distances over the last few years?</p>
+</section>
+<section id="pulling-strava-data" class="level1">
+<h1>Pulling Strava data</h1>
+<p>Strava has a public API. After the OAuth dance and a paginated pull through <code>/athlete/activities</code>, I had 803 runs back to 2014, 777 of them with HR data, although I only started running more seriously from 2023. The fetch script is short, just access-token refresh and saving everything to a single <code>activities.json</code>. I’ll skip the fetch code in this post; here, I’m just loading the saved JSON.</p>
+<p>Each activity comes with <code>start_date</code>, <code>distance</code>, <code>average_speed</code>, <code>average_heartrate</code>, <code>workout_type</code>, and a few other fields. The <code>workout_type</code> field is the most useful one for filtering. Strava lets you tag runs as <code>Race</code> (1), <code>Workout</code> (2), <code>Long Run</code> (3), or default/easy (<code>None</code> or <code>0</code>).</p>
+<div id="9eac18b4" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-05-06T19:34:42.637450Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-05-06T19:34:42.637285Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-05-06T19:34:42.651413Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-05-06T19:34:42.650886Z&quot;}}" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1">acts <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> json.loads(Path(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'activities.json'</span>).read_text())</span>
+<span id="cb2-2">runs <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [a <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> a <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> acts <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> a.get(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'type'</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Run'</span>]</span>
+<span id="cb2-3">with_hr <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [a <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> a <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> runs <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> a.get(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'average_heartrate'</span>)]</span>
+<span id="cb2-4"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'Total activities: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(acts)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'</span>)</span>
+<span id="cb2-5"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'Runs: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(runs)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'</span>)</span>
+<span id="cb2-6"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'Runs with avg HR: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(with_hr)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'</span>)</span>
+<span id="cb2-7"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'Date range: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">min</span>(a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"start_date"</span>][:<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>] <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> a <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> runs)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> -&gt; </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">max</span>(a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"start_date"</span>][:<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>] <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> a <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> runs)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Total activities: 919
+Runs: 803
+Runs with avg HR: 777
+Date range: 2014-11-04 -&gt; 2026-05-05</code></pre>
+</div>
+</div>
+</section>
+<section id="aerobic-fitness-easy-run-hr-vs-pace" class="level1">
+<h1>Aerobic fitness: easy-run HR vs pace</h1>
+<p>Same pace, lower HR is the textbook signal of improving aerobic fitness. Let’s plot HR against pace, restricted to easy runs.</p>
+<p>I filtered to <code>workout_type</code> in <code>{None, 0}</code>, excluded treadmill runs (HR data is unreliable indoors for me), and dropped runs longer than 15 mi (cardiac drift over long runs inflates HR and breaks the linear pace–HR relationship). Note that I also dropped runs shorter than 1 mi, since those tend to be warmups or interrupted runs.</p>
+<div id="65c1f28e" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-05-06T19:34:42.652832Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-05-06T19:34:42.652716Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-05-06T19:34:42.777952Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-05-06T19:34:42.777537Z&quot;}}" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1">EASY_TYPES <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> {<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>}</span>
+<span id="cb4-2">records <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> []</span>
+<span id="cb4-3"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> a <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> acts:</span>
+<span id="cb4-4">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> a.get(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'type'</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Run'</span>: <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">continue</span></span>
+<span id="cb4-5">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> a.get(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'workout_type'</span>) <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">not</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> EASY_TYPES: <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">continue</span></span>
+<span id="cb4-6">    hr <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> a.get(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'average_heartrate'</span>)</span>
+<span id="cb4-7">    spd <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> a.get(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'average_speed'</span>)   <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># m/s</span></span>
+<span id="cb4-8">    dist_mi <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> a.get(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'distance'</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1609.34</span></span>
+<span id="cb4-9">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">not</span> hr <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">or</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">not</span> spd <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">or</span> hr <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">90</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">or</span> hr <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">200</span>: <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">continue</span></span>
+<span id="cb4-10">    pace <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">26.8224</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> spd            <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># min/mi</span></span>
+<span id="cb4-11">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> pace <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">or</span> pace <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">15</span>: <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">continue</span></span>
+<span id="cb4-12">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> dist_mi <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.0</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">or</span> dist_mi <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">15</span>: <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">continue</span></span>
+<span id="cb4-13">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> a.get(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'trainer'</span>): <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">continue</span></span>
+<span id="cb4-14">    records.append({</span>
+<span id="cb4-15">        <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'date'</span>: datetime.fromisoformat(a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'start_date'</span>].replace(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Z'</span>,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'+00:00'</span>)).date(),</span>
+<span id="cb4-16">        <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'pace'</span>: pace,</span>
+<span id="cb4-17">        <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'hr'</span>: hr,</span>
+<span id="cb4-18">    })</span>
+<span id="cb4-19">records.sort(key<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">lambda</span> r: r[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'date'</span>])</span>
+<span id="cb4-20"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'Filtered easy runs: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(records)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'</span>)</span>
+<span id="cb4-21"></span>
+<span id="cb4-22">dates <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.array([mdates.date2num(r[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'date'</span>]) <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> r <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> records])</span>
+<span id="cb4-23">paces <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.array([r[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'pace'</span>] <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> r <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> records])</span>
+<span id="cb4-24">hrs   <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.array([r[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'hr'</span>] <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> r <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> records])</span>
+<span id="cb4-25"></span>
+<span id="cb4-26"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Multivariate linear: HR ~ pace + date</span></span>
+<span id="cb4-27">X <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.column_stack([paces, dates, np.ones_like(paces)])</span>
+<span id="cb4-28">coef, <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>_ <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.linalg.lstsq(X, hrs, rcond<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>)</span>
+<span id="cb4-29">a_, b_, c_ <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> coef</span>
+<span id="cb4-30">resid <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> hrs <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> X <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">@</span> coef</span>
+<span id="cb4-31"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'Pace coef: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>a_<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.2f}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> bpm per +1 min/mi slower'</span>)</span>
+<span id="cb4-32"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'Drift:     </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>b_<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">365</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:+.2f}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> bpm/year at fixed pace'</span>)</span>
+<span id="cb4-33"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'R^2:       </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> resid<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span>var()<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span>hrs<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span>var()<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.3f}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">    resid std: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>resid<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span>std()<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.2f}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> bpm'</span>)</span>
+<span id="cb4-34"></span>
+<span id="cb4-35">fig, ax <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> plt.subplots(figsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">9</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6</span>))</span>
+<span id="cb4-36">sc <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> ax.scatter(paces, hrs, c<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>dates, cmap<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>gray_blue, s<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">22</span>,</span>
+<span id="cb4-37">                edgecolor<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'k'</span>, linewidth<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.2</span>, alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.75</span>)</span>
+<span id="cb4-38">cbar <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> plt.colorbar(sc, ax<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>ax)</span>
+<span id="cb4-39">loc <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> mdates.AutoDateLocator()<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span> cbar.ax.yaxis.set_major_locator(loc)</span>
+<span id="cb4-40">cbar.ax.yaxis.set_major_formatter(mdates.ConciseDateFormatter(loc))</span>
+<span id="cb4-41">cbar.set_label(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Date'</span>)</span>
+<span id="cb4-42"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> q, color, lbl <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> [(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.10</span>, (<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.78</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.78</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.78</span>), <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Early'</span>),</span>
+<span id="cb4-43">                      (<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.50</span>, (<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.45</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.50</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.55</span>), <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Mid'</span>),</span>
+<span id="cb4-44">                      (<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.90</span>, (<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.10</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.30</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.65</span>), <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Recent'</span>)]:</span>
+<span id="cb4-45">    qd <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.percentile(dates, q<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">100</span>)</span>
+<span id="cb4-46">    xs <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.linspace(paces.<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">min</span>(), paces.<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">max</span>(), <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">50</span>)</span>
+<span id="cb4-47">    ax.plot(xs, a_<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>xs <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> b_<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>qd <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> c_, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'--'</span>, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>color, lw<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>,</span>
+<span id="cb4-48">            label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>lbl<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> (</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>mdates<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span>num2date(qd)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%</span>Y<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-%</span>m<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">)'</span>)</span>
+<span id="cb4-49">ax.invert_xaxis()</span>
+<span id="cb4-50">ax.set_xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Pace (min/mile)'</span>)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span> ax.set_ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'HR (bpm)'</span>)</span>
+<span id="cb4-51">ax.set_title(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'Easy-run HR vs Pace, full Strava history (n=</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(records)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">)'</span>)</span>
+<span id="cb4-52">ax.grid(alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.3</span>)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span> ax.legend()</span>
+<span id="cb4-53">plt.tight_layout()</span>
+<span id="cb4-54">plt.show()</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Filtered easy runs: 604
+Pace coef: -6.18 bpm per +1 min/mi slower
+Drift:     -3.50 bpm/year at fixed pace
+R^2:       0.531    resid std: 6.93 bpm</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://sunhwan.github.io/blog/posts/2026-05-06-strava-fitness-and-race-pace/index_files/figure-html/cell-4-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Three regression lines (early, mid, recent) share a similar pace–HR slope but stack with progressively lower intercepts. At every pace, recent HR is meaningfully below early HR.</p>
+<p>The time-series view makes the trajectory clearer if I normalize HR to a fixed reference pace (9:30/mi) using the regression coefficient above, then plot a 90-day rolling median:</p>
+<div id="bd598f38" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-05-06T19:34:42.779169Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-05-06T19:34:42.779070Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-05-06T19:34:42.859683Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-05-06T19:34:42.859291Z&quot;}}" data-execution_count="4">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1">ref_pace <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">9.5</span></span>
+<span id="cb6-2">hr_norm <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> hrs <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> a_ <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> (paces <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> ref_pace)</span>
+<span id="cb6-3"></span>
+<span id="cb6-4">fig, ax <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> plt.subplots(figsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">11</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>))</span>
+<span id="cb6-5">ax.scatter([r[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'date'</span>] <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> r <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> records], hr_norm, c<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>dates, cmap<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>gray_blue,</span>
+<span id="cb6-6">           s<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">16</span>, alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>, edgecolor<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'none'</span>)</span>
+<span id="cb6-7">order <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.argsort(dates)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span> t_s, h_s <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> dates[order], hr_norm[order]</span>
+<span id="cb6-8">window <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">90</span></span>
+<span id="cb6-9">roll_x, roll_y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [], []</span>
+<span id="cb6-10"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> i <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">range</span>(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(t_s)):</span>
+<span id="cb6-11">    mask <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (t_s <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;=</span> t_s[i]<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>window<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&amp;</span> (t_s <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;=</span> t_s[i]<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span>window<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>)</span>
+<span id="cb6-12">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> mask.<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">sum</span>() <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>:</span>
+<span id="cb6-13">        roll_x.append(t_s[i])<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span> roll_y.append(np.median(h_s[mask]))</span>
+<span id="cb6-14">ax.plot([mdates.num2date(x) <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> x <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> roll_x], roll_y,</span>
+<span id="cb6-15">        color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>BLUE, lw<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'90-day rolling median'</span>)</span>
+<span id="cb6-16">ax.set_ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'HR @ 9:30 pace (bpm, lower = fitter)'</span>)</span>
+<span id="cb6-17">ax.set_xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Date'</span>)</span>
+<span id="cb6-18">ax.xaxis.set_major_locator(mdates.YearLocator())</span>
+<span id="cb6-19">ax.xaxis.set_major_formatter(mdates.DateFormatter(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'%Y'</span>))</span>
+<span id="cb6-20">ax.set_title(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Pace-normalized easy HR over 11 years'</span>)</span>
+<span id="cb6-21">ax.grid(alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.3</span>)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span> ax.legend()</span>
+<span id="cb6-22">plt.tight_layout()</span>
+<span id="cb6-23">plt.show()</span>
+<span id="cb6-24"></span>
+<span id="cb6-25"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Yearly medians at 9:30</span></span>
+<span id="cb6-26"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Year   HR @ 9:30   n'</span>)</span>
+<span id="cb6-27"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> y <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">sorted</span>({r[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'date'</span>].year <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> r <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> records}):</span>
+<span id="cb6-28">    mask <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.array([r[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'date'</span>].year <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> y <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> r <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> records])</span>
+<span id="cb6-29">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> mask.<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">sum</span>() <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>: <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">continue</span></span>
+<span id="cb6-30">    <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>y<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">    </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>np<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span>median(hr_norm[mask])<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:6.1f}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">     </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>mask<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">.</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">sum</span>()<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:4d}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'</span>)</span></code></pre></div></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://sunhwan.github.io/blog/posts/2026-05-06-strava-fitness-and-race-pace/index_files/figure-html/cell-5-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Year   HR @ 9:30   n
+2016     175.1        8
+2018     173.1        5
+2019     162.1        7
+2022     156.7       32
+2023     157.4       58
+2024     150.4      225
+2025     148.0      195
+2026     143.5       74</code></pre>
+</div>
+</div>
+<p>Wow, that’s about a 32 bpm drop over a decade at the same pace. In 2017, I ran a turkey trot with my kids and I only trained few weeks, then stopped. In 2019, I moved to Los Angeles, and tried running, but I switched over to cycling because running sucked at the time (I wasn’t in shape for running). I again started running in 2023, and kept going. I was running/walking in the beginning, but consistency helped. I broke my ankle at the end of 2023, but kept running after the recovery. Consistency does pay off. The same pattern shows up in just the recent ~10 weeks of my training spreadsheet, where a multivariate <code>HR ~ pace + date</code> fit gives roughly −0.9 bpm/month at fixed pace. So, the long-arc trend is not just a decade-old story; it is still going.</p>
+</section>
+<section id="volume-and-average-pace" class="level1">
+<h1>Volume and average pace</h1>
+<p>Above is filtered to easy runs. It might also be informative to look at total distance and average pace by year, across all runs.</p>
+<div id="a7668e84" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-05-06T19:34:42.860864Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-05-06T19:34:42.860778Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-05-06T19:34:42.918799Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-05-06T19:34:42.918403Z&quot;}}" data-execution_count="5">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1">year_dist <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> defaultdict(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">float</span>)        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># miles</span></span>
+<span id="cb8-2">year_time <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> defaultdict(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">float</span>)        <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># seconds (moving)</span></span>
+<span id="cb8-3">year_count <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> defaultdict(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">int</span>)</span>
+<span id="cb8-4">year_dist_easy <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> defaultdict(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">float</span>)</span>
+<span id="cb8-5">year_time_easy <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> defaultdict(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">float</span>)</span>
+<span id="cb8-6"></span>
+<span id="cb8-7"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> a <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> acts:</span>
+<span id="cb8-8">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> a.get(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'type'</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Run'</span>: <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">continue</span></span>
+<span id="cb8-9">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> a.get(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'manual'</span>): <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">continue</span></span>
+<span id="cb8-10">    dist_mi <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> a.get(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'distance'</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1609.34</span></span>
+<span id="cb8-11">    mtime <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> a.get(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'moving_time'</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>)</span>
+<span id="cb8-12">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> dist_mi <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">or</span> mtime <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>: <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">continue</span></span>
+<span id="cb8-13">    year <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> datetime.fromisoformat(a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'start_date'</span>].replace(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Z'</span>,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'+00:00'</span>)).year</span>
+<span id="cb8-14">    year_dist[year] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+=</span> dist_mi</span>
+<span id="cb8-15">    year_time[year] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+=</span> mtime</span>
+<span id="cb8-16">    year_count[year] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span></span>
+<span id="cb8-17">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> a.get(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'workout_type'</span>) <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> (<span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>):</span>
+<span id="cb8-18">        year_dist_easy[year] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+=</span> dist_mi</span>
+<span id="cb8-19">        year_time_easy[year] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+=</span> mtime</span>
+<span id="cb8-20"></span>
+<span id="cb8-21">years <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">sorted</span>(year_dist)</span>
+<span id="cb8-22">dist <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [year_dist[y] <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> y <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> years]</span>
+<span id="cb8-23">counts <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [year_count[y] <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> y <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> years]</span>
+<span id="cb8-24">pace_easy <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [year_time_easy[y]<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">60</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> year_dist_easy[y] <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> year_dist_easy[y] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">else</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> y <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> years]</span>
+<span id="cb8-25"></span>
+<span id="cb8-26">fig, ax <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> plt.subplots(figsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>))</span>
+<span id="cb8-27">ax.bar(years, dist, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>BLUE, edgecolor<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'k'</span>, linewidth<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.4</span>)</span>
+<span id="cb8-28"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> x, y_, n <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">zip</span>(years, dist, counts):</span>
+<span id="cb8-29">    ax.text(x, y_<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">max</span>(dist)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.01</span>, <span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>y_<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.0f}</span><span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">\n</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">(</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>n<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">)'</span>, ha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'center'</span>, va<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'bottom'</span>,</span>
+<span id="cb8-30">            fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8.5</span>, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'k'</span>)</span>
+<span id="cb8-31">ax.set_xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Year'</span>)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span> ax.set_ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Distance (miles)'</span>)</span>
+<span id="cb8-32">ax.set_title(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Annual running distance (label = miles, n = runs)'</span>)</span>
+<span id="cb8-33">ax.set_xticks(years)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span> ax.grid(alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.3</span>, axis<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'y'</span>)</span>
+<span id="cb8-34">ax.set_ylim(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">max</span>(dist)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.15</span>)</span>
+<span id="cb8-35">plt.tight_layout()</span>
+<span id="cb8-36">plt.show()</span></code></pre></div></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://sunhwan.github.io/blog/posts/2026-05-06-strava-fitness-and-race-pace/index_files/figure-html/cell-6-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Late 2023 is when I jumped from running ~5 mi/week to ~25 mi/week, then roughly doubled again in 2024. 2025 finished at 1818 mi; 2026 is on pace for ~2200.</p>
+<div id="16313f88" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-05-06T19:34:42.920082Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-05-06T19:34:42.919993Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-05-06T19:34:42.979459Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-05-06T19:34:42.979060Z&quot;}}" data-execution_count="6">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1">fig, ax <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> plt.subplots(figsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>))</span>
+<span id="cb9-2">easy_pace <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.array([p <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> p <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">is</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">not</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">None</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">else</span> np.nan <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> p <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> pace_easy], dtype<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">float</span>)</span>
+<span id="cb9-3">ax.plot(years, easy_pace, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'-o'</span>, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>BLUE, lw<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, ms<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8</span>, mec<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'k'</span>, mew<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.5</span>)</span>
+<span id="cb9-4"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> y, p, n <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">zip</span>(years, easy_pace, counts):</span>
+<span id="cb9-5">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> np.isnan(p): <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">continue</span></span>
+<span id="cb9-6">    m <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">int</span>(p)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span> s <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">int</span>(<span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">round</span>((p<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span>m)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">60</span>))</span>
+<span id="cb9-7">    ax.annotate(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>m<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">:</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>s<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:02d}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'</span>, xy<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(y, p), xytext<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">14</span>),</span>
+<span id="cb9-8">                textcoords<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'offset points'</span>, ha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'center'</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">9</span>)</span>
+<span id="cb9-9">ax.set_xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Year'</span>)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">;</span> ax.set_ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Average pace (min/mile)'</span>)</span>
+<span id="cb9-10">ax.set_title(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Annual average pace, easy/default runs (distance-weighted; up = faster)'</span>)</span>
+<span id="cb9-11">ax.set_xticks(years)</span>
+<span id="cb9-12">ymin <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.nanmin(easy_pace) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.4</span></span>
+<span id="cb9-13">ymax <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.nanmax(easy_pace) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.4</span></span>
+<span id="cb9-14">ax.set_ylim(ymax, ymin)  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># invert so up = faster</span></span>
+<span id="cb9-15">ax.grid(alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.3</span>)</span>
+<span id="cb9-16">plt.tight_layout()</span>
+<span id="cb9-17">plt.show()</span></code></pre></div></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://sunhwan.github.io/blog/posts/2026-05-06-strava-fitness-and-race-pace/index_files/figure-html/cell-7-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Annual average pace was actually <em>slower</em> during the high-volume ramp years (10:58 in 2024–2025) than during a lower-volume 2019. That’s because the new volume came in mostly at easy pace. But 2026 has dropped to 10:29. Same volume, run faster.</p>
+</section>
+<section id="race-pace-progression" class="level1">
+<h1>Race pace progression</h1>
+<p>Easy-run HR is a leading indicator; race times are the ground truth. Strava lets me filter <code>workout_type == 1</code> (Race), and after dropping a few activities where I was pacing someone else (not my own effort), I had 11 races across 2024–2026.</p>
+<p>The empirical relationship between race pace and distance is roughly logarithmic. Pace gets slower at longer distances, but the falloff slows down. Let’s fit <code>pace = a + b·log10(distance)</code> per year and see what changes.</p>
+<div id="0f90e351" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-05-06T19:34:42.980684Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-05-06T19:34:42.980609Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-05-06T19:34:43.102954Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-05-06T19:34:43.102567Z&quot;}}" data-execution_count="7">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> log_curve(d, a, b):</span>
+<span id="cb10-2">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> a <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> b <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span> np.log10(d)</span>
+<span id="cb10-3"></span>
+<span id="cb10-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Races where I was pacing someone else, not my own effort</span></span>
+<span id="cb10-5">PACING_RUNS <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> {</span>
+<span id="cb10-6">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'2026-03-01'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'2026-03-08'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'2025-11-27'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'2025-07-27'</span>,</span>
+<span id="cb10-7">    <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'2025-04-27'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'2025-03-15'</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'2025-05-17'</span>,</span>
+<span id="cb10-8">}</span>
+<span id="cb10-9"></span>
+<span id="cb10-10">races <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> []</span>
+<span id="cb10-11"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> a <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> acts:</span>
+<span id="cb10-12">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> a.get(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'type'</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Run'</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">or</span> a.get(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'workout_type'</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>: <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">continue</span></span>
+<span id="cb10-13">    spd <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> a.get(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'average_speed'</span>)</span>
+<span id="cb10-14">    dist_mi <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> a.get(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'distance'</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1609.34</span></span>
+<span id="cb10-15">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">not</span> spd <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">or</span> dist_mi <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>: <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">continue</span></span>
+<span id="cb10-16">    pace <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">26.8224</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> spd</span>
+<span id="cb10-17">    date_str <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'start_date'</span>][:<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>]</span>
+<span id="cb10-18">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> date_str <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> PACING_RUNS: <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">continue</span></span>
+<span id="cb10-19">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> pace <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">13</span>: <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">continue</span></span>
+<span id="cb10-20">    races.append({</span>
+<span id="cb10-21">        <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'date'</span>: datetime.fromisoformat(a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'start_date'</span>].replace(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Z'</span>,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'+00:00'</span>)).date(),</span>
+<span id="cb10-22">        <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'year'</span>: datetime.fromisoformat(a[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'start_date'</span>].replace(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Z'</span>,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'+00:00'</span>)).year,</span>
+<span id="cb10-23">        <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'dist'</span>: dist_mi,</span>
+<span id="cb10-24">        <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'pace'</span>: pace,</span>
+<span id="cb10-25">        <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'name'</span>: a.get(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'name'</span>,<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">''</span>),</span>
+<span id="cb10-26">    })</span>
+<span id="cb10-27">races.sort(key<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">lambda</span> r: r[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'date'</span>])</span>
+<span id="cb10-28"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'Races kept: </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(races)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'</span>)</span>
+<span id="cb10-29"></span>
+<span id="cb10-30">year_fits <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> {}</span>
+<span id="cb10-31"><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'</span><span class="ch" style="color: #20794D;
+background-color: null;
+font-style: inherit;">\n</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">Per-year log fits: pace = a + b*log10(distance)'</span>)</span>
+<span id="cb10-32"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> yr <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">sorted</span>({r[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'year'</span>] <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> r <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> races}):</span>
+<span id="cb10-33">    rs <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> [r <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> r <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> races <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> r[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'year'</span>] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> yr]</span>
+<span id="cb10-34">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(rs) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>: <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">continue</span></span>
+<span id="cb10-35">    d <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.array([r[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'dist'</span>] <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> r <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> rs])</span>
+<span id="cb10-36">    p <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.array([r[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'pace'</span>] <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> r <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> rs])</span>
+<span id="cb10-37">    po, _ <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> curve_fit(log_curve, d, p, maxfev<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20000</span>)</span>
+<span id="cb10-38">    pred <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> log_curve(d, <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>po)</span>
+<span id="cb10-39">    r2 <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> (p <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> pred).var() <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> p.var() <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(p) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">else</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.0</span></span>
+<span id="cb10-40">    year_fits[yr] <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> (po, r2, <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(rs))</span>
+<span id="cb10-41">    <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">print</span>(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'  </span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>yr<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> (n=</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(rs)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">): a=</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>po[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.2f}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">  b=</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>po[<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:+.2f}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">  '</span></span>
+<span id="cb10-42">          <span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'pace@5K=</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>log_curve(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3.107</span>,<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>po)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.2f}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">  pace@HM=</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>log_curve(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">13.11</span>,<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>po)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.2f}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">  '</span></span>
+<span id="cb10-43">          <span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'pace@M=</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>log_curve(<span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">26.22</span>,<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>po)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.2f}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">  R^2=</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>r2<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.2f}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'</span>)</span>
+<span id="cb10-44"></span>
+<span id="cb10-45">years_set <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">sorted</span>({r[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'year'</span>] <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> r <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> races})</span>
+<span id="cb10-46">y_min, y_max <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">min</span>(years_set), <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">max</span>(years_set)</span>
+<span id="cb10-47"><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">def</span> year_color(y):</span>
+<span id="cb10-48">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">return</span> gray_blue((y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> y_min) <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">/</span> <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">max</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, y_max <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> y_min))</span>
+<span id="cb10-49"></span>
+<span id="cb10-50">fig, ax <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> plt.subplots(figsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6.5</span>))</span>
+<span id="cb10-51"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> r <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> races:</span>
+<span id="cb10-52">    ax.scatter(r[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'dist'</span>], r[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'pace'</span>], color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>year_color(r[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'year'</span>]), s<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">80</span>,</span>
+<span id="cb10-53">               edgecolor<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'k'</span>, linewidth<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.6</span>, zorder<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>)</span>
+<span id="cb10-54">    ax.annotate(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f"</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>r[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'date'</span>]<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">%</span>y<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-%</span>m<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"</span>, xy<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(r[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'dist'</span>], r[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'pace'</span>]),</span>
+<span id="cb10-55">                xytext<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>), textcoords<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'offset points'</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">7</span>, alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.8</span>)</span>
+<span id="cb10-56">xs <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> np.linspace(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>, <span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">max</span>(r[<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'dist'</span>] <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> r <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> races)<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.05</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">400</span>)</span>
+<span id="cb10-57"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> yr, (po, r2y, n) <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> year_fits.items():</span>
+<span id="cb10-58">    label <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>yr<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> fit (n=</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>n<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'</span></span>
+<span id="cb10-59">    <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> n <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>: label <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+=</span> <span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f', R^2=</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>r2y<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:.2f}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'</span></span>
+<span id="cb10-60">    label <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">')'</span></span>
+<span id="cb10-61">    ax.plot(xs, log_curve(xs, <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">*</span>po), <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'-'</span>, color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>year_color(yr), lw<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2.2</span>, label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>label)</span>
+<span id="cb10-62"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> yr <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> years_set:</span>
+<span id="cb10-63">    ax.scatter([], [], color<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span>year_color(yr), s<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">60</span>, edgecolor<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'k'</span>, label<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span>yr<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;"> races'</span>)</span>
+<span id="cb10-64">ax.set_xlabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Distance (miles)'</span>)</span>
+<span id="cb10-65">ax.set_ylabel(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'Pace (min/mile, lower = faster)'</span>)</span>
+<span id="cb10-66">ax.set_title(<span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">f'Race pace vs distance, log fit per year (n=</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span><span class="bu" style="color: null;
+background-color: null;
+font-style: inherit;">len</span>(races)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span><span class="ss" style="color: #20794D;
+background-color: null;
+font-style: inherit;">)'</span>)</span>
+<span id="cb10-67">ax.grid(alpha<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.3</span>)</span>
+<span id="cb10-68">ax.legend(loc<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'lower right'</span>, fontsize<span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">9</span>)</span>
+<span id="cb10-69">plt.tight_layout()</span>
+<span id="cb10-70">plt.show()</span></code></pre></div></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Races kept: 12
+
+Per-year log fits: pace = a + b*log10(distance)
+  2024 (n=3): a=7.52  b=+3.15  pace@5K=9.07  pace@HM=11.04  pace@M=11.98  R^2=0.99
+  2025 (n=5): a=6.60  b=+3.08  pace@5K=8.12  pace@HM=10.04  pace@M=10.97  R^2=0.90
+  2026 (n=3): a=6.00  b=+2.96  pace@5K=7.46  pace@HM=9.32  pace@M=10.21  R^2=0.91</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="https://sunhwan.github.io/blog/posts/2026-05-06-strava-fitness-and-race-pace/index_files/figure-html/cell-8-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Two things stood out. First, the slopes (b ≈ 3.0) are nearly identical across years, so the <em>shape</em> of how I handle distance isn’t really changing; the whole curve is shifting downward as base fitness improves. Second, improvement is roughly uniform across distances, about 45–60 sec/mi gained per year at every distance. So this is not a “got faster at 5K but lost the marathon” story, or vice versa, although my marathon time is much slower than what my 5K/half time predicts. So, there’s a room for an improvement.</p>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>The two questions I started with both have a clear answer. Easy-run HR at fixed pace is the lowest it has ever been and still trending down, even just over the past few months. Race pace has dropped roughly 45–60 sec/mi per year at every distance from 5K through marathon, and the log-curve shape has stayed consistent across years.</p>
+<p>A few things I find interesting and would like to dig into more:</p>
+<ul>
+<li>The Riegel formula <code>T_2 = T_1 * (D_2/D_1)^1.06</code> predicts a marathon ~13% faster than I actually run, given my recent 5K. The half-marathon is also slower than predicted, but the gap is much smaller. I suspect this is muscular endurance / fueling and not aerobic capacity (race-day HR was lower at the marathon than at the half, which is the opposite of what an aerobic limit would look like), but I would like to look at this more carefully.</li>
+<li>The <code>workout_type</code> labels are not always reliable. Some runs tagged <code>easy</code> in the data are clearly tempo runs based on HR. A cleaner pass over the data, or a model that infers workout type from pace/HR distribution within the activity, would probably tighten the regressions.</li>
+<li>I just started a 16 week 5K training block. It would be interesting to run this every few months or so to keep track if I’m improving and look for a bottleneck in my training.</li>
+</ul>
+
+
+</section>
+
+ ]]></description>
+  <category>Running</category>
+  <category>Strava</category>
+  <category>Data Analysis</category>
+  <guid>https://sunhwan.github.io/blog/posts/2026-05-06-strava-fitness-and-race-pace/</guid>
+  <pubDate>Wed, 06 May 2026 00:00:00 GMT</pubDate>
+</item>
 <item>
   <title>Packing circles in 2D surface</title>
   <link>https://sunhwan.github.io/blog/posts/2022-01-20-Circle-Packing/</link>
