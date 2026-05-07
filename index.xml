@@ -19,7 +19,7 @@
 
 
 
-<div id="08b9e063" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-05-06T19:34:41.280768Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-05-06T19:34:41.280651Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-05-06T19:34:42.635709Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-05-06T19:34:42.635116Z&quot;}}" data-execution_count="1">
+<div id="08b9e063" class="cell" data-execution_count="2">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;
@@ -108,7 +108,9 @@ font-style: inherit;">0.65</span>)</span></code></pre></div></div>
 <h1>Pulling Strava data</h1>
 <p>Strava has a public API. After the OAuth dance and a paginated pull through <code>/athlete/activities</code>, I had 803 runs back to 2014, 777 of them with HR data, although I only started running more seriously from 2023. The fetch script is short, just access-token refresh and saving everything to a single <code>activities.json</code>. I’ll skip the fetch code in this post; here, I’m just loading the saved JSON.</p>
 <p>Each activity comes with <code>start_date</code>, <code>distance</code>, <code>average_speed</code>, <code>average_heartrate</code>, <code>workout_type</code>, and a few other fields. The <code>workout_type</code> field is the most useful one for filtering. Strava lets you tag runs as <code>Race</code> (1), <code>Workout</code> (2), <code>Long Run</code> (3), or default/easy (<code>None</code> or <code>0</code>).</p>
-<div id="9eac18b4" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-05-06T19:34:42.637450Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-05-06T19:34:42.637285Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-05-06T19:34:42.651413Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-05-06T19:34:42.650886Z&quot;}}" data-execution_count="2">
+<div id="9eac18b4" class="cell" data-execution_count="3">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1">acts <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> json.loads(Path(<span class="st" style="color: #20794D;
@@ -226,6 +228,7 @@ background-color: null;
 font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'</span>)</span></code></pre></div></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Total activities: 919
 Runs: 803
@@ -238,7 +241,9 @@ Date range: 2014-11-04 -&gt; 2026-05-05</code></pre>
 <h1>Aerobic fitness: easy-run HR vs pace</h1>
 <p>Same pace, lower HR is the textbook signal of improving aerobic fitness. Let’s plot HR against pace, restricted to easy runs.</p>
 <p>I filtered to <code>workout_type</code> in <code>{None, 0}</code>, excluded treadmill runs (HR data is unreliable indoors for me), and dropped runs longer than 15 mi (cardiac drift over long runs inflates HR and breaks the linear pace–HR relationship). Note that I also dropped runs shorter than 1 mi, since those tend to be warmups or interrupted runs.</p>
-<div id="65c1f28e" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-05-06T19:34:42.652832Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-05-06T19:34:42.652716Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-05-06T19:34:42.777952Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-05-06T19:34:42.777537Z&quot;}}" data-execution_count="3">
+<div id="65c1f28e" class="cell" data-execution_count="5">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1">EASY_TYPES <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> {<span class="va" style="color: #111111;
@@ -545,7 +550,8 @@ font-style: inherit;">:.2f}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;"> bpm'</span>)</span>
 <span id="cb4-34"></span>
-<span id="cb4-35">fig, ax <span class="op" style="color: #5E5E5E;
+<span id="cb4-35"></span>
+<span id="cb4-36">fig, ax <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> plt.subplots(figsize<span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -554,7 +560,7 @@ background-color: null;
 font-style: inherit;">9</span>, <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">6</span>))</span>
-<span id="cb4-36">sc <span class="op" style="color: #5E5E5E;
+<span id="cb4-37">sc <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> ax.scatter(paces, hrs, c<span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -565,7 +571,7 @@ background-color: null;
 font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">22</span>,</span>
-<span id="cb4-37">                edgecolor<span class="op" style="color: #5E5E5E;
+<span id="cb4-38">                edgecolor<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span><span class="st" style="color: #20794D;
 background-color: null;
@@ -578,21 +584,21 @@ background-color: null;
 font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.75</span>)</span>
-<span id="cb4-38">cbar <span class="op" style="color: #5E5E5E;
+<span id="cb4-39">cbar <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> plt.colorbar(sc, ax<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span>ax)</span>
-<span id="cb4-39">loc <span class="op" style="color: #5E5E5E;
+<span id="cb4-40">loc <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> mdates.AutoDateLocator()<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">;</span> cbar.ax.yaxis.set_major_locator(loc)</span>
-<span id="cb4-40">cbar.ax.yaxis.set_major_formatter(mdates.ConciseDateFormatter(loc))</span>
-<span id="cb4-41">cbar.set_label(<span class="st" style="color: #20794D;
+<span id="cb4-41">cbar.ax.yaxis.set_major_formatter(mdates.ConciseDateFormatter(loc))</span>
+<span id="cb4-42">cbar.set_label(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Date'</span>)</span>
-<span id="cb4-42"><span class="cf" style="color: #003B4F;
+<span id="cb4-43"><span class="cf" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
 font-style: inherit;">for</span> q, color, lbl <span class="kw" style="color: #003B4F;
@@ -609,7 +615,7 @@ background-color: null;
 font-style: inherit;">0.78</span>), <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Early'</span>),</span>
-<span id="cb4-43">                      (<span class="fl" style="color: #AD0000;
+<span id="cb4-44">                      (<span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.50</span>, (<span class="fl" style="color: #AD0000;
 background-color: null;
@@ -620,7 +626,7 @@ background-color: null;
 font-style: inherit;">0.55</span>), <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Mid'</span>),</span>
-<span id="cb4-44">                      (<span class="fl" style="color: #AD0000;
+<span id="cb4-45">                      (<span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.90</span>, (<span class="fl" style="color: #AD0000;
 background-color: null;
@@ -631,14 +637,14 @@ background-color: null;
 font-style: inherit;">0.65</span>), <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Recent'</span>)]:</span>
-<span id="cb4-45">    qd <span class="op" style="color: #5E5E5E;
+<span id="cb4-46">    qd <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> np.percentile(dates, q<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">*</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">100</span>)</span>
-<span id="cb4-46">    xs <span class="op" style="color: #5E5E5E;
+<span id="cb4-47">    xs <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> np.linspace(paces.<span class="bu" style="color: null;
 background-color: null;
@@ -647,7 +653,7 @@ background-color: null;
 font-style: inherit;">max</span>(), <span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">50</span>)</span>
-<span id="cb4-47">    ax.plot(xs, a_<span class="op" style="color: #5E5E5E;
+<span id="cb4-48">    ax.plot(xs, a_<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">*</span>xs <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -664,7 +670,7 @@ background-color: null;
 font-style: inherit;">=</span><span class="dv" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">2</span>,</span>
-<span id="cb4-48">            label<span class="op" style="color: #5E5E5E;
+<span id="cb4-49">            label<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span><span class="ss" style="color: #20794D;
 background-color: null;
@@ -689,15 +695,16 @@ background-color: null;
 font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">)'</span>)</span>
-<span id="cb4-49">ax.invert_xaxis()</span>
-<span id="cb4-50">ax.set_xlabel(<span class="st" style="color: #20794D;
+<span id="cb4-50">    </span>
+<span id="cb4-51">ax.invert_xaxis()</span>
+<span id="cb4-52">ax.set_xlabel(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'Pace (min/mile)'</span>)<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">;</span> ax.set_ylabel(<span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'HR (bpm)'</span>)</span>
-<span id="cb4-51">ax.set_title(<span class="ss" style="color: #20794D;
+<span id="cb4-53">ax.set_title(<span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">f'Easy-run HR vs Pace, full Strava history (n=</span><span class="sc" style="color: #5E5E5E;
 background-color: null;
@@ -708,15 +715,16 @@ background-color: null;
 font-style: inherit;">}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">)'</span>)</span>
-<span id="cb4-52">ax.grid(alpha<span class="op" style="color: #5E5E5E;
+<span id="cb4-54">ax.grid(alpha<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span><span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.3</span>)<span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">;</span> ax.legend()</span>
-<span id="cb4-53">plt.tight_layout()</span>
-<span id="cb4-54">plt.show()</span></code></pre></div></div>
+<span id="cb4-55">plt.tight_layout()</span>
+<span id="cb4-56">plt.show()</span></code></pre></div></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Filtered easy runs: 604
 Pace coef: -6.18 bpm per +1 min/mi slower
@@ -733,7 +741,9 @@ R^2:       0.531    resid std: 6.93 bpm</code></pre>
 </div>
 <p>Three regression lines (early, mid, recent) share a similar pace–HR slope but stack with progressively lower intercepts. At every pace, recent HR is meaningfully below early HR.</p>
 <p>The time-series view makes the trajectory clearer if I normalize HR to a fixed reference pace (9:30/mi) using the regression coefficient above, then plot a 90-day rolling median:</p>
-<div id="bd598f38" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-05-06T19:34:42.779169Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-05-06T19:34:42.779070Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-05-06T19:34:42.859683Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-05-06T19:34:42.859291Z&quot;}}" data-execution_count="4">
+<div id="bd598f38" class="cell" data-execution_count="7">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1">ref_pace <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
@@ -965,6 +975,7 @@ background-color: null;
 font-style: inherit;">:4d}</span><span class="ss" style="color: #20794D;
 background-color: null;
 font-style: inherit;">'</span>)</span></code></pre></div></div>
+</details>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -984,12 +995,15 @@ font-style: inherit;">'</span>)</span></code></pre></div></div>
 2026     143.5       74</code></pre>
 </div>
 </div>
-<p>Wow, that’s about a 32 bpm drop over a decade at the same pace. In 2017, I ran a turkey trot with my kids and I only trained few weeks, then stopped. In 2019, I moved to Los Angeles, and tried running, but I switched over to cycling because running sucked at the time (I wasn’t in shape for running). I again started running in 2023, and kept going. I was running/walking in the beginning, but consistency helped. I broke my ankle at the end of 2023, but kept running after the recovery. Consistency does pay off. The same pattern shows up in just the recent ~10 weeks of my training spreadsheet, where a multivariate <code>HR ~ pace + date</code> fit gives roughly −0.9 bpm/month at fixed pace. So, the long-arc trend is not just a decade-old story; it is still going.</p>
+<p>Wow, that’s about a 32 bpm drop over a decade at the same pace. In 2017, I ran a turkey trot with my kids and I only trained few weeks, then stopped. In 2019, I moved to Los Angeles, and tried running, but I switched over to cycling because running sucked at the time (I wasn’t in shape for running). I again started running in 2023, and kept going. I was running/walking in the beginning, but consistency helped. I broke my ankle at the end of 2023, but kept running after the recovery. Consistency does pay off.</p>
+<p>The same pattern shows up in just the recent ~10 weeks of my training spreadsheet, where a multivariate <code>HR ~ pace + date</code> fit gives roughly −0.9 bpm/month at fixed pace. So, the long-arc trend is not just a decade-old story; it is still going.</p>
 </section>
 <section id="volume-and-average-pace" class="level1">
 <h1>Volume and average pace</h1>
 <p>Above is filtered to easy runs. It might also be informative to look at total distance and average pace by year, across all runs.</p>
-<div id="a7668e84" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-05-06T19:34:42.860864Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-05-06T19:34:42.860778Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-05-06T19:34:42.918799Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-05-06T19:34:42.918403Z&quot;}}" data-execution_count="5">
+<div id="a7668e84" class="cell" data-execution_count="9">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1">year_dist <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> defaultdict(<span class="bu" style="color: null;
@@ -1279,6 +1293,7 @@ background-color: null;
 font-style: inherit;">1.15</span>)</span>
 <span id="cb8-35">plt.tight_layout()</span>
 <span id="cb8-36">plt.show()</span></code></pre></div></div>
+</details>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -1288,7 +1303,9 @@ font-style: inherit;">1.15</span>)</span>
 </div>
 </div>
 <p>Late 2023 is when I jumped from running ~5 mi/week to ~25 mi/week, then roughly doubled again in 2024. 2025 finished at 1818 mi; 2026 is on pace for ~2200.</p>
-<div id="16313f88" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-05-06T19:34:42.920082Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-05-06T19:34:42.919993Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-05-06T19:34:42.979459Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-05-06T19:34:42.979060Z&quot;}}" data-execution_count="6">
+<div id="16313f88" class="cell" data-execution_count="10">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1">fig, ax <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> plt.subplots(figsize<span class="op" style="color: #5E5E5E;
@@ -1454,6 +1471,7 @@ background-color: null;
 font-style: inherit;">0.3</span>)</span>
 <span id="cb9-16">plt.tight_layout()</span>
 <span id="cb9-17">plt.show()</span></code></pre></div></div>
+</details>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -1468,7 +1486,9 @@ font-style: inherit;">0.3</span>)</span>
 <h1>Race pace progression</h1>
 <p>Easy-run HR is a leading indicator; race times are the ground truth. Strava lets me filter <code>workout_type == 1</code> (Race), and after dropping a few activities where I was pacing someone else (not my own effort), I had 11 races across 2024–2026.</p>
 <p>The empirical relationship between race pace and distance is roughly logarithmic. Pace gets slower at longer distances, but the falloff slows down. Let’s fit <code>pace = a + b·log10(distance)</code> per year and see what changes.</p>
-<div id="0f90e351" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-05-06T19:34:42.980684Z&quot;,&quot;iopub.status.busy&quot;:&quot;2026-05-06T19:34:42.980609Z&quot;,&quot;iopub.status.idle&quot;:&quot;2026-05-06T19:34:43.102954Z&quot;,&quot;shell.execute_reply&quot;:&quot;2026-05-06T19:34:43.102567Z&quot;}}" data-execution_count="7">
+<div id="0f90e351" class="cell" data-execution_count="11">
+<details class="code-fold">
+<summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
@@ -2126,6 +2146,7 @@ background-color: null;
 font-style: inherit;">9</span>)</span>
 <span id="cb10-69">plt.tight_layout()</span>
 <span id="cb10-70">plt.show()</span></code></pre></div></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Races kept: 12
 
