@@ -6,14 +6,14 @@
       version="2.0">
 <channel>
 <title>Sunhwan Jo</title>
-<link>https://sunhwan.github.io/blog/</link>
-<atom:link href="https://sunhwan.github.io/blog/index.xml" rel="self" type="application/rss+xml"/>
+<link>https://sunhwanj.com/</link>
+<atom:link href="https://sunhwanj.com/index.xml" rel="self" type="application/rss+xml"/>
 <description>Computational chemist. Personal blog for code and science.</description>
 <generator>quarto-1.9.37</generator>
 <lastBuildDate>Wed, 06 May 2026 00:00:00 GMT</lastBuildDate>
 <item>
   <title>Running Progress from a Decade of Strava Data</title>
-  <link>https://sunhwan.github.io/blog/posts/2026-05-06-strava-fitness-and-race-pace/</link>
+  <link>https://sunhwanj.com/posts/2026-05-06-strava-fitness-and-race-pace/</link>
   <description><![CDATA[ 
 
 
@@ -734,7 +734,7 @@ R^2:       0.531    resid std: 6.93 bpm</code></pre>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2026-05-06-strava-fitness-and-race-pace/index_files/figure-html/cell-4-output-2.png" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2026-05-06-strava-fitness-and-race-pace/index_files/figure-html/cell-4-output-2.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -979,7 +979,7 @@ font-style: inherit;">'</span>)</span></code></pre></div></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2026-05-06-strava-fitness-and-race-pace/index_files/figure-html/cell-5-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2026-05-06-strava-fitness-and-race-pace/index_files/figure-html/cell-5-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -1297,7 +1297,7 @@ font-style: inherit;">1.15</span>)</span>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2026-05-06-strava-fitness-and-race-pace/index_files/figure-html/cell-6-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2026-05-06-strava-fitness-and-race-pace/index_files/figure-html/cell-6-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -1475,7 +1475,7 @@ font-style: inherit;">0.3</span>)</span>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2026-05-06-strava-fitness-and-race-pace/index_files/figure-html/cell-7-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2026-05-06-strava-fitness-and-race-pace/index_files/figure-html/cell-7-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -2158,7 +2158,7 @@ Per-year log fits: pace = a + b*log10(distance)
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2026-05-06-strava-fitness-and-race-pace/index_files/figure-html/cell-8-output-2.png" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2026-05-06-strava-fitness-and-race-pace/index_files/figure-html/cell-8-output-2.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -2182,12 +2182,12 @@ Per-year log fits: pace = a + b*log10(distance)
   <category>Running</category>
   <category>Strava</category>
   <category>Data Analysis</category>
-  <guid>https://sunhwan.github.io/blog/posts/2026-05-06-strava-fitness-and-race-pace/</guid>
+  <guid>https://sunhwanj.com/posts/2026-05-06-strava-fitness-and-race-pace/</guid>
   <pubDate>Wed, 06 May 2026 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Packing circles in 2D surface</title>
-  <link>https://sunhwan.github.io/blog/posts/2022-01-20-Circle-Packing/</link>
+  <link>https://sunhwanj.com/posts/2022-01-20-Circle-Packing/</link>
   <description><![CDATA[ 
 
 
@@ -2466,7 +2466,7 @@ font-style: inherit;">2</span>])</span></code></pre></div></div>
 <p>Analytically, an externally tangent circle, <img src="https://latex.codecogs.com/png.latex?C_C"> to the two circles (tangent to each other), <img src="https://latex.codecogs.com/png.latex?C_A"> and <img src="https://latex.codecogs.com/png.latex?C_B">, can be found by finding an intersection point of two circles having same center as <img src="https://latex.codecogs.com/png.latex?C_A"> and <img src="https://latex.codecogs.com/png.latex?C_B"> but larger radii <img src="https://latex.codecogs.com/png.latex?r_A%20+%20r_C"> and <img src="https://latex.codecogs.com/png.latex?r_B%20+%20r_C">.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2022-01-20-Circle-Packing/files/circle_tangent.png" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2022-01-20-Circle-Packing/files/circle_tangent.png" class="img-fluid figure-img"></p>
 <figcaption>feature</figcaption>
 </figure>
 </div>
@@ -2928,7 +2928,7 @@ font-style: inherit;">True</span>)</span></code></pre></div></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2022-01-20-Circle-Packing/index_files/figure-html/cell-12-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2022-01-20-Circle-Packing/index_files/figure-html/cell-12-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -3804,7 +3804,7 @@ font-style: inherit;">True</span>)</span></code></pre></div></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2022-01-20-Circle-Packing/index_files/figure-html/cell-16-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2022-01-20-Circle-Packing/index_files/figure-html/cell-16-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -4995,12 +4995,12 @@ AAAAAExhdmY1OC43Ni4xMDA=
  ]]></description>
   <category>RDKit</category>
   <category>Reaction Library</category>
-  <guid>https://sunhwan.github.io/blog/posts/2022-01-20-Circle-Packing/</guid>
+  <guid>https://sunhwanj.com/posts/2022-01-20-Circle-Packing/</guid>
   <pubDate>Thu, 20 Jan 2022 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Generating Reaction Library Compounds</title>
-  <link>https://sunhwan.github.io/blog/posts/2021-12-22-Generating-Reaction-Library-Compound/</link>
+  <link>https://sunhwanj.com/posts/2021-12-22-Generating-Reaction-Library-Compound/</link>
   <description><![CDATA[ 
 
 
@@ -6632,7 +6632,7 @@ font-style: inherit;">open</span>(img)</span></code></pre></div></div>
 <div class="cell-output cell-output-display" data-execution_count="21">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-12-22-Generating-Reaction-Library-Compound/index_files/figure-html/cell-14-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-12-22-Generating-Reaction-Library-Compound/index_files/figure-html/cell-14-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -6644,7 +6644,7 @@ font-style: inherit;">open</span>(img)</span></code></pre></div></div>
 <p>Also, if one attempts to build the entire possible library, the amount of computation will grow exponentially. For example, if we have 300 functional group blocks and 200 core blocks, which permits two reactions, the number of possible combinations are two billion already.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-12-22-Generating-Reaction-Library-Compound/files/two_billion_meme.jpg" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-12-22-Generating-Reaction-Library-Compound/files/two_billion_meme.jpg" class="img-fluid figure-img"></p>
 <figcaption>feature</figcaption>
 </figure>
 </div>
@@ -6656,12 +6656,12 @@ font-style: inherit;">open</span>(img)</span></code></pre></div></div>
  ]]></description>
   <category>RDKit</category>
   <category>Reaction Library</category>
-  <guid>https://sunhwan.github.io/blog/posts/2021-12-22-Generating-Reaction-Library-Compound/</guid>
+  <guid>https://sunhwanj.com/posts/2021-12-22-Generating-Reaction-Library-Compound/</guid>
   <pubDate>Wed, 22 Dec 2021 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Run Molecular Dynamics Simulation on Container and AWS Batch</title>
-  <link>https://sunhwan.github.io/blog/posts/2021-04-27-run-md-on-container-and-aws-batch/</link>
+  <link>https://sunhwanj.com/posts/2021-04-27-run-md-on-container-and-aws-batch/</link>
   <description><![CDATA[ 
 
 
@@ -6722,7 +6722,7 @@ RUN conda install -c conda-forge openmm</code></pre>
 <p>Let’s try a more general example. Let’s create a job definition that can take script (and input structure) from AWS S3, run MD simulation, and store the output back on the S3 storage.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/assets/figures/awsbatch.png" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/assets/figures/awsbatch.png" class="img-fluid figure-img"></p>
 <figcaption>AWS Arrangement</figcaption>
 </figure>
 </div>
@@ -6777,7 +6777,7 @@ $ aws s3 cp myjob.sh s3://&lt;bucket&gt;/myjob.sh</code></pre></li>
 <p>That’s a lot of boilerplate! All is left is to revise the job definition file to submit a job. Note that we need to supply the IAM role for S3 access and the environment variables for <code>fetch_and_run.sh</code> script. The job script should</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/assets/figures/awsbatch_jobdefinition.png" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/assets/figures/awsbatch_jobdefinition.png" class="img-fluid figure-img"></p>
 <figcaption>AWS Job Definition</figcaption>
 </figure>
 </div>
@@ -6797,12 +6797,12 @@ $ aws s3 cp myjob.sh s3://&lt;bucket&gt;/myjob.sh</code></pre></li>
  ]]></description>
   <category>Cloud</category>
   <category>MD Simulation</category>
-  <guid>https://sunhwan.github.io/blog/posts/2021-04-27-run-md-on-container-and-aws-batch/</guid>
+  <guid>https://sunhwanj.com/posts/2021-04-27-run-md-on-container-and-aws-batch/</guid>
   <pubDate>Tue, 27 Apr 2021 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Run Molecular Dynamics Simulation on AWS Cluster</title>
-  <link>https://sunhwan.github.io/blog/posts/2021-04-17-run-md-on-aws-cluster/</link>
+  <link>https://sunhwanj.com/posts/2021-04-17-run-md-on-aws-cluster/</link>
   <description><![CDATA[ 
 
 
@@ -6940,12 +6940,12 @@ sbatch run.sh</code></pre>
  ]]></description>
   <category>Cloud</category>
   <category>MD Simulation</category>
-  <guid>https://sunhwan.github.io/blog/posts/2021-04-17-run-md-on-aws-cluster/</guid>
+  <guid>https://sunhwanj.com/posts/2021-04-17-run-md-on-aws-cluster/</guid>
   <pubDate>Sat, 17 Apr 2021 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Random Matrix Theory in Molecular Classification</title>
-  <link>https://sunhwan.github.io/blog/posts/2021-03-10-Random-Matrix-Theory-Molecular-Classification/</link>
+  <link>https://sunhwanj.com/posts/2021-03-10-Random-Matrix-Theory-Molecular-Classification/</link>
   <description><![CDATA[ 
 
 
@@ -7266,7 +7266,7 @@ font-style: inherit;">'Prob.'</span>)</span>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-03-10-Random-Matrix-Theory-Molecular-Classification/index_files/figure-html/cell-4-output-2.png" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-03-10-Random-Matrix-Theory-Molecular-Classification/index_files/figure-html/cell-4-output-2.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -7377,7 +7377,7 @@ font-style: inherit;">'Fingerprint'</span>)</span>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-03-10-Random-Matrix-Theory-Molecular-Classification/index_files/figure-html/cell-6-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-03-10-Random-Matrix-Theory-Molecular-Classification/index_files/figure-html/cell-6-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -7606,7 +7606,7 @@ font-style: inherit;">0.2</span>)</span>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-03-10-Random-Matrix-Theory-Molecular-Classification/index_files/figure-html/cell-8-output-2.png" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-03-10-Random-Matrix-Theory-Molecular-Classification/index_files/figure-html/cell-8-output-2.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -7814,7 +7814,7 @@ font-style: inherit;">'Probability'</span>)</span>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-03-10-Random-Matrix-Theory-Molecular-Classification/index_files/figure-html/cell-11-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-03-10-Random-Matrix-Theory-Molecular-Classification/index_files/figure-html/cell-11-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -7873,7 +7873,7 @@ font-style: inherit;">in</span> ms])</span>
 <div class="cell-output cell-output-display" data-execution_count="17">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-03-10-Random-Matrix-Theory-Molecular-Classification/index_files/figure-html/cell-12-output-1.svg" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-03-10-Random-Matrix-Theory-Molecular-Classification/index_files/figure-html/cell-12-output-1.svg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -7933,7 +7933,7 @@ font-style: inherit;">in</span> ms])</span>
 <div class="cell-output cell-output-display" data-execution_count="18">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-03-10-Random-Matrix-Theory-Molecular-Classification/index_files/figure-html/cell-13-output-1.svg" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-03-10-Random-Matrix-Theory-Molecular-Classification/index_files/figure-html/cell-13-output-1.svg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -8471,7 +8471,7 @@ font-style: inherit;">%</span> auc)</span>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-03-10-Random-Matrix-Theory-Molecular-Classification/index_files/figure-html/cell-17-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-03-10-Random-Matrix-Theory-Molecular-Classification/index_files/figure-html/cell-17-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -8690,12 +8690,12 @@ font-style: inherit;">print</span>(auc)</span></code></pre></div></div>
  ]]></description>
   <category>machine learning</category>
   <category>QSAR</category>
-  <guid>https://sunhwan.github.io/blog/posts/2021-03-10-Random-Matrix-Theory-Molecular-Classification/</guid>
+  <guid>https://sunhwanj.com/posts/2021-03-10-Random-Matrix-Theory-Molecular-Classification/</guid>
   <pubDate>Wed, 10 Mar 2021 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Learning Molecular Representation using Graph Neural Network - Training Molecular Graph</title>
-  <link>https://sunhwan.github.io/blog/posts/2021-03-07-Learning-Molecular-Representation-Using-Graph-Neural-Network-Training-Molecular-Graph/</link>
+  <link>https://sunhwanj.com/posts/2021-03-07-Learning-Molecular-Representation-Using-Graph-Neural-Network-Training-Molecular-Graph/</link>
   <description><![CDATA[ 
 
 
@@ -8710,7 +8710,7 @@ font-style: inherit;">print</span>(auc)</span></code></pre></div></div>
 <h1>Recap</h1>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-03-07-Learning-Molecular-Representation-Using-Graph-Neural-Network-Training-Molecular-Graph/files/molecular_graph_features.png" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-03-07-Learning-Molecular-Representation-Using-Graph-Neural-Network-Training-Molecular-Graph/files/molecular_graph_features.png" class="img-fluid figure-img"></p>
 <figcaption>feature</figcaption>
 </figure>
 </div>
@@ -8718,7 +8718,7 @@ font-style: inherit;">print</span>(auc)</span></code></pre></div></div>
 <p>The initial hidden message is constructed as <img src="https://latex.codecogs.com/png.latex?h_%7Bvw%7D%5E0%20=%20%5Ctau%20(W_i%20%5Cmathrm%7Bcat%7D(x_v,%20e_%7Bvw%7D))"> where <img src="https://latex.codecogs.com/png.latex?W_i"> is a learned matrix and <img src="https://latex.codecogs.com/png.latex?%5Ctau"> is an activation function.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-03-07-Learning-Molecular-Representation-Using-Graph-Neural-Network-Training-Molecular-Graph/files/molecular_graph_message.png" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-03-07-Learning-Molecular-Representation-Using-Graph-Neural-Network-Training-Molecular-Graph/files/molecular_graph_message.png" class="img-fluid figure-img"></p>
 <figcaption>message</figcaption>
 </figure>
 </div>
@@ -13879,7 +13879,7 @@ font-style: inherit;">'Predicted ClogP'</span>)</span>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-03-07-Learning-Molecular-Representation-Using-Graph-Neural-Network-Training-Molecular-Graph/index_files/figure-html/cell-18-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-03-07-Learning-Molecular-Representation-Using-Graph-Neural-Network-Training-Molecular-Graph/index_files/figure-html/cell-18-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -14653,7 +14653,7 @@ font-style: inherit;">'Predicted ClogP'</span>)</span>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-03-07-Learning-Molecular-Representation-Using-Graph-Neural-Network-Training-Molecular-Graph/index_files/figure-html/cell-20-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-03-07-Learning-Molecular-Representation-Using-Graph-Neural-Network-Training-Molecular-Graph/index_files/figure-html/cell-20-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -14671,12 +14671,12 @@ font-style: inherit;">'Predicted ClogP'</span>)</span>
   <category>rdkit</category>
   <category>machine learning</category>
   <category>graph neural network</category>
-  <guid>https://sunhwan.github.io/blog/posts/2021-03-07-Learning-Molecular-Representation-Using-Graph-Neural-Network-Training-Molecular-Graph/</guid>
+  <guid>https://sunhwanj.com/posts/2021-03-07-Learning-Molecular-Representation-Using-Graph-Neural-Network-Training-Molecular-Graph/</guid>
   <pubDate>Sun, 07 Mar 2021 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Piperazine Ring Conformation using RDKit</title>
-  <link>https://sunhwan.github.io/blog/posts/2021-02-24-RDKit-ETKDG-Piperazine/</link>
+  <link>https://sunhwanj.com/posts/2021-02-24-RDKit-ETKDG-Piperazine/</link>
   <description><![CDATA[ 
 
 
@@ -14823,7 +14823,7 @@ font-style: inherit;">=</span> Chem.MolFromSmiles(smiles)</span>
 <div class="cell-output cell-output-display" data-execution_count="4">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-02-24-RDKit-ETKDG-Piperazine/index_files/figure-html/cell-3-output-1.svg" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-02-24-RDKit-ETKDG-Piperazine/index_files/figure-html/cell-3-output-1.svg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -16001,12 +16001,12 @@ viewer_1614273302294014.render();
 
  ]]></description>
   <category>rdkit</category>
-  <guid>https://sunhwan.github.io/blog/posts/2021-02-24-RDKit-ETKDG-Piperazine/</guid>
+  <guid>https://sunhwanj.com/posts/2021-02-24-RDKit-ETKDG-Piperazine/</guid>
   <pubDate>Wed, 24 Feb 2021 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Learning Molecular Representation using Graph Neural Network - Molecular Graph</title>
-  <link>https://sunhwan.github.io/blog/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/</link>
+  <link>https://sunhwanj.com/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/</link>
   <description><![CDATA[ 
 
 
@@ -16165,9 +16165,9 @@ font-style: inherit;">import</span> nn</span></code></pre></div></div>
 <h1>Message passing neural network (MPNN)</h1>
 <p>Chemprop adopts a variant of graph neural network called “directed message passing neural network (D-MPNN)”. Let’s first talk about MPNN and discuss the difference between the MPNN and D-MPNN later.</p>
 <p>MPNN is a model that operates on an undirected graph, <img src="https://latex.codecogs.com/png.latex?G"> with a set of nodes <img src="https://latex.codecogs.com/png.latex?v"> and edges <img src="https://latex.codecogs.com/png.latex?e">. This is appealing because molecules can be thought as a graph with nodes (atoms) and edges (bonds).</p>
-<p><img src="https://sunhwan.github.io/blog/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/files/molecular_graph_1.png" class="img-fluid"></p>
+<p><img src="https://sunhwanj.com/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/files/molecular_graph_1.png" class="img-fluid"></p>
 <p>MPNN operates in two phases; molecular encoding phase and the feed-forward phase (the paper uses “message passing phase” and “readout phase”, respectively). In the molecular encoding phase, the features in the atoms and bonds are passed around <code>T</code> times to build a molecular representation of the molecule and the molecular properties are predicted in the feed-forward phase. The parameter <code>T</code> is also called “depth” and represents how “far” each nodes can “see”.</p>
-<p><img src="https://sunhwan.github.io/blog/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/files/molecular_graph_2.png" class="img-fluid"></p>
+<p><img src="https://sunhwanj.com/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/files/molecular_graph_2.png" class="img-fluid"></p>
 <p>Compared to a typical MPNN, the package <code>chemprop</code> adopts directed MPNN (D-MPNN) architecture using bond features. Although the molecular graph does not have a direction, one can treat each bond as two directed edges that goes opposite direction. One of the advantage of this approach is to prevent totters (message that goes back to itself because the first node is the its neighbor of neighbor). <code>chemprop</code> also uses bond feature, which is concatenated feature vector of atom and bond feature vectors.</p>
 <p>Let’s take a look at how <code>chemprop</code> featurizes atom and bond:</p>
 </section>
@@ -16887,7 +16887,7 @@ font-style: inherit;">=</span> Chem.MolFromSmiles(smiles)</span>
 <div class="cell-output cell-output-display" data-execution_count="5">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/index_files/figure-html/cell-5-output-1.svg" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/index_files/figure-html/cell-5-output-1.svg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -16972,7 +16972,7 @@ font-style: inherit;"># remove the ticks</span></span>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/index_files/figure-html/cell-6-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/index_files/figure-html/cell-6-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -17158,7 +17158,7 @@ font-style: inherit;">0.05</span>), </span>
 <div class="cell-output cell-output-display" data-execution_count="18">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/index_files/figure-html/cell-7-output-1.svg" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/index_files/figure-html/cell-7-output-1.svg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -17568,7 +17568,7 @@ font-style: inherit;">=</span> d.GetDrawingText()</span>
 <div class="cell-output cell-output-display" data-execution_count="19">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/index_files/figure-html/cell-9-output-1.svg" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/index_files/figure-html/cell-9-output-1.svg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -17626,7 +17626,7 @@ font-style: inherit;"># remove the ticks</span></span>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/index_files/figure-html/cell-10-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/index_files/figure-html/cell-10-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -17659,7 +17659,7 @@ font-style: inherit;">=</span> d.GetDrawingText()</span>
 <div class="cell-output cell-output-display" data-execution_count="21">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/index_files/figure-html/cell-11-output-1.svg" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/index_files/figure-html/cell-11-output-1.svg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -17728,7 +17728,7 @@ font-style: inherit;"># remove the ticks</span></span>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/index_files/figure-html/cell-12-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/index_files/figure-html/cell-12-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -17813,7 +17813,7 @@ font-style: inherit;"># remove the ticks</span></span>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/index_files/figure-html/cell-13-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/index_files/figure-html/cell-13-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -18170,7 +18170,7 @@ font-style: inherit;">'atom index'</span>)</span>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/index_files/figure-html/cell-16-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/index_files/figure-html/cell-16-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -18246,7 +18246,7 @@ font-style: inherit;">'bond index'</span>)</span>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/index_files/figure-html/cell-17-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/index_files/figure-html/cell-17-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -18624,7 +18624,7 @@ font-style: inherit;">'Initial message'</span>)</span>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/index_files/figure-html/cell-20-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/index_files/figure-html/cell-20-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -18715,7 +18715,7 @@ font-style: inherit;">'Messages after 3 steps of message passing'</span>)</span>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/index_files/figure-html/cell-21-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/index_files/figure-html/cell-21-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -18832,7 +18832,7 @@ font-style: inherit;">'Final hidden state for each atom'</span>)</span>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/index_files/figure-html/cell-23-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/index_files/figure-html/cell-23-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -18950,7 +18950,7 @@ font-style: inherit;">'Learned Molecular Vector'</span>)</span>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/index_files/figure-html/cell-25-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/index_files/figure-html/cell-25-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -18976,12 +18976,12 @@ font-style: inherit;">'Learned Molecular Vector'</span>)</span>
   <category>rdkit</category>
   <category>machine learning</category>
   <category>graph neural network</category>
-  <guid>https://sunhwan.github.io/blog/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/</guid>
+  <guid>https://sunhwanj.com/posts/2021-02-20-Learning-Molecular-Representation-Using-Graph-Neural-Network-Molecular-Graph/</guid>
   <pubDate>Sat, 20 Feb 2021 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Ligand SASA in Protein Pocket</title>
-  <link>https://sunhwan.github.io/blog/posts/2021-02-04-RDKit-Protein-Ligand-SASA/</link>
+  <link>https://sunhwanj.com/posts/2021-02-04-RDKit-Protein-Ligand-SASA/</link>
   <description><![CDATA[ 
 
 
@@ -19668,7 +19668,7 @@ font-style: inherit;">'SASA'</span>)</span>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-02-04-RDKit-Protein-Ligand-SASA/index_files/figure-html/cell-14-output-1.svg" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-02-04-RDKit-Protein-Ligand-SASA/index_files/figure-html/cell-14-output-1.svg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -19691,12 +19691,12 @@ font-style: inherit;">8</span>)</span></code></pre></div></div>
 
  ]]></description>
   <category>rdkit</category>
-  <guid>https://sunhwan.github.io/blog/posts/2021-02-04-RDKit-Protein-Ligand-SASA/</guid>
+  <guid>https://sunhwanj.com/posts/2021-02-04-RDKit-Protein-Ligand-SASA/</guid>
   <pubDate>Thu, 04 Feb 2021 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Build 3D coordinates of congeneric series</title>
-  <link>https://sunhwan.github.io/blog/posts/2021-01-29-RDKit-Embed-Congeneric-Series/</link>
+  <link>https://sunhwanj.com/posts/2021-01-29-RDKit-Embed-Congeneric-Series/</link>
   <description><![CDATA[ 
 
 
@@ -19842,7 +19842,7 @@ font-style: inherit;">=</span> Chem.RemoveHs(imatinib)</span>
 <div class="cell-output cell-output-display" data-execution_count="7">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-01-29-RDKit-Embed-Congeneric-Series/index_files/figure-html/cell-3-output-1.svg" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-01-29-RDKit-Embed-Congeneric-Series/index_files/figure-html/cell-3-output-1.svg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -19858,7 +19858,7 @@ font-style: inherit;">'Cc1ccc(NC(=O)c2ccc(c3ccccc3)cc2)cc1Nc1nccc(-c2cccnc2)n1'<
 <div class="cell-output cell-output-display" data-execution_count="12">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-01-29-RDKit-Embed-Congeneric-Series/index_files/figure-html/cell-4-output-1.svg" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-01-29-RDKit-Embed-Congeneric-Series/index_files/figure-html/cell-4-output-1.svg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -19879,7 +19879,7 @@ font-style: inherit;">=</span> Chem.MolFromSmarts(smarts)</span>
 <div class="cell-output cell-output-display" data-execution_count="24">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-01-29-RDKit-Embed-Congeneric-Series/index_files/figure-html/cell-5-output-1.svg" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-01-29-RDKit-Embed-Congeneric-Series/index_files/figure-html/cell-5-output-1.svg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -19893,7 +19893,7 @@ font-style: inherit;"># confirm the SMARTS pattern is what we intended</span></s
 <div class="cell-output cell-output-display" data-execution_count="27">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-01-29-RDKit-Embed-Congeneric-Series/index_files/figure-html/cell-6-output-1.svg" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-01-29-RDKit-Embed-Congeneric-Series/index_files/figure-html/cell-6-output-1.svg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -19904,7 +19904,7 @@ font-style: inherit;"># confirm the SMARTS pattern is what we intended</span></s
 <div class="cell-output cell-output-display" data-execution_count="28">
 <div>
 <figure class="figure">
-<p><img src="https://sunhwan.github.io/blog/posts/2021-01-29-RDKit-Embed-Congeneric-Series/index_files/figure-html/cell-7-output-1.svg" class="img-fluid figure-img"></p>
+<p><img src="https://sunhwanj.com/posts/2021-01-29-RDKit-Embed-Congeneric-Series/index_files/figure-html/cell-7-output-1.svg" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -20170,7 +20170,7 @@ viewer_1611989978735174.render();
 
  ]]></description>
   <category>rdkit</category>
-  <guid>https://sunhwan.github.io/blog/posts/2021-01-29-RDKit-Embed-Congeneric-Series/</guid>
+  <guid>https://sunhwanj.com/posts/2021-01-29-RDKit-Embed-Congeneric-Series/</guid>
   <pubDate>Fri, 29 Jan 2021 00:00:00 GMT</pubDate>
 </item>
 </channel>
