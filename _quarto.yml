@@ -3,11 +3,12 @@ project:
   output-dir: _site
   resources:
     - assets/**
+    - CNAME
 
 website:
   title: "Sunhwan Jo"
   description: "Computational chemist. Personal blog for code and science."
-  site-url: https://sunhwan.github.io/blog
+  site-url: https://sunhwanj.com
   repo-url: https://github.com/sunhwan/blog
   navbar:
     right:
