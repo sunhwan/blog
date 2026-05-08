@@ -1,2 +1,7 @@
 execute:
   enabled: false
+
+format:
+  html:
+    include-after-body:
+      - ../../_cusdis.html
